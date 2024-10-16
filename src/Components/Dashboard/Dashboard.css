@@ -1,0 +1,115 @@
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0f0f0;
+    padding: 10px 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensure header stays above sidebar */
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .sidebar-toggle {
+    cursor: pointer;
+    font-size: 24px;
+  }
+  
+  .company-logo {
+    height: 40px; /* Adjust height as needed */
+    margin-left: 10px; /* Space between toggle and logo */
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logout-button {
+    margin-left: auto; /* Push logout button to the right */
+  }
+  
+  /* Sidebar Styles */
+  .sidebar {
+    position: fixed;
+    top: 60px; /* Adjust based on header height */
+    left: 0;
+    bottom: 0;
+    background-color: rgb(208, 209, 215);
+    color: #464343;
+    transition: width 0.3s ease;
+    overflow-y: auto;
+    padding-top: 20px;
+    width: 220px;
+    z-index: 999; /* Ensure sidebar is behind header */
+  }
+  
+  .sidebar.collapsed {
+    width: 50px;
+  }
+  
+  .position-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  }
+  
+  .nav-item {
+    list-style: none;
+  }
+  
+  .nav-item .nav-link {
+    display: flex;
+    align-items: center;
+    color: #464343;
+    text-decoration: none;
+    padding: 15px 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-item .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .nav-icon {
+    margin-right: 10px;
+  }
+  
+  .link_text {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 16px;
+    color: #000;
+  }
+  
+  .nav-item.active .nav-link {
+    background-color: #f0f0f0;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 767px) {
+    .sidebar {
+      display: none;
+    }
+    
+    .sidebar.collapsed {
+      display: block;
+      width: 180px; 
+    }
+  
+    .sidebar.collapsed .nav-link .link_text {
+      display: block; /* Show text when sidebar is expanded */
+    }
+  
+    .sidebar .nav-link .link_text {
+      display: none; /* Hide text when sidebar is collapsed */
+    }
+  }
+  
