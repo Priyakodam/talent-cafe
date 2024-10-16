@@ -176,7 +176,7 @@ const EmployeeClient = () => {
                                     </Button>
                                     &nbsp;
                                     <Button type="submit" variant="primary" disabled={isSubmitting}>
-                                        {isSubmitting ? "Adding..." : "Add Client"} {/* Change text based on submission status */}
+                                        {isSubmitting ? "Adding..." : "Add Client"} 
                                     </Button>
                                 </div>
                             </Form>
