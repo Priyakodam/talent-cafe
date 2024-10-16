@@ -26,6 +26,28 @@
   white-space: nowrap; /* Prevent line breaks */
 }
 
+.header-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically in the center */
+  justify-content: space-between; /* Adds space between elements */
+  
+}
+
+.add-profile-button {
+  
+  padding: 10px 15px;
+  background-color: #007bff; /* Adjust to your desired color */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-profile-button:hover {
+  background-color: #0056b3; /* Darker shade for hover effect */
+}
+
+
   /* Responsive Design */
   @media (max-width: 767px) {
     .e-screening-container {

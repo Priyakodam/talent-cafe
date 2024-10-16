@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { Form, Button, Col, Row, Card } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import { db, storage } from '../../Firebase/FirebaseConfig'; // Make sure to import db and storage
 import "./EmployeeApplicants.css";
 
@@ -29,6 +30,7 @@ const EmployeeApplicants = () => {
     source: '',
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,11 +74,13 @@ const EmployeeApplicants = () => {
         status:'Applied',
         resume: resumeURL, // Store the download URL of the resume
         dateOfBirth: formattedDateOfBirth, // Store the formatted date of birth
+        createdAt: new Date(),
       };
 
       // Store the applicant data in Firestore
       await db.collection('applicants').add(applicantData);
       alert('Application submitted successfully!');
+      navigate('/e-screening');
     } catch (error) {
       console.error('Error uploading resume or saving data:', error);
       alert('Error submitting application. Please try again.');
@@ -84,6 +88,10 @@ const EmployeeApplicants = () => {
       setLoading(false);
     }
   };
+
+  const handlebackclick = () => {
+    navigate('/e-screening'); // Change this path to your actual route for adding clients
+};
 
   return (
     <div className='e-applicant-container'>
@@ -116,7 +124,7 @@ const EmployeeApplicants = () => {
                   <Form.Group className="mb-3">
                     <Form.Label>Gender</Form.Label>
                     <Form.Select name="gender" value={formData.gender} onChange={handleChange}>
-                      <option value="">Select</option>
+                      <option value="" disabled>Select</option>
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                       <option value="Other">Other</option>
@@ -193,7 +201,7 @@ const EmployeeApplicants = () => {
                   <Form.Group className="mb-3">
                     <Form.Label>Source</Form.Label>
                     <Form.Select name="source" value={formData.source} onChange={handleChange}>
-                      <option value="">Select Source</option>
+                      <option value="" disabled>Select Source</option>
                       <option value="LinkedIn">LinkedIn</option>
                       <option value="Indeed">Indeed</option>
                       <option value="Company Website">Company Website</option>
@@ -211,6 +219,9 @@ const EmployeeApplicants = () => {
                   </Form.Group>
                 </Col>
               </Row>
+              <Button onClick={handlebackclick} variant="btn btn-secondary" style={{marginRight:'10px'}}>
+                Close
+              </Button>
               <Button type="submit" variant="primary" disabled={loading}>
                 {loading ? 'Submitting...' : 'Submit'}
               </Button>

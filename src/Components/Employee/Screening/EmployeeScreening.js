@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { db } from '../../Firebase/FirebaseConfig'; // Import the Firestore database
@@ -8,66 +9,82 @@ const EmployeeScreening = () => {
     const { user } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
     const [applicants, setApplicants] = useState([]);
+    const navigate = useNavigate(); // Initialize useNavigate
 
     useEffect(() => {
-        const fetchApplicants = async () => {
-            try {
-                const snapshot = await db.collection('applicants').get();
-                const applicantsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setApplicants(applicantsData);
-            } catch (error) {
-                console.error("Error fetching applicants: ", error);
-            }
-        };
+      const fetchApplicants = async () => {
+          try {
+              const snapshot = await db.collection('applicants').get();
+              const applicantsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        fetchApplicants();
-    }, []);
+              // Sort applicants by createdAt timestamp, newest first
+              applicantsData.sort((a, b) => b.createdAt - a.createdAt);
+
+              setApplicants(applicantsData);
+          } catch (error) {
+              console.error("Error fetching applicants: ", error);
+          }
+      };
+
+      fetchApplicants();
+  }, []);
 
     const handleActionChange = async (applicantId, newStatus) => {
-      const applicant = applicants.find(app => app.id === applicantId);
-      
-      // Check for invalid status change
-      if ((applicant.status === "Shortlisted" && newStatus === "Rejected") || 
-          (applicant.status === "Rejected" && newStatus === "Shortlisted")) {
-          alert(`Applicant ID ${applicantId} cannot be changed from ${applicant.status} to ${newStatus}.`);
-          return;
-      }
-  
-      // Update the applicant's status in Firestore
-      try {
-          await db.collection('applicants').doc(applicantId).update({
-              status: newStatus
-          });
-  
-          // Update local state with the new status
-          setApplicants(prevApplicants => 
-              prevApplicants.map(app => 
-                  app.id === applicantId ? { ...app, status: newStatus } : app
-              )
-          );
-  
-          // If the new status is "Shortlisted," add to L1_Candidates collection
-          if (newStatus === "Shortlisted") {
-              // Set the status explicitly to "Shortlisted" in L1_Candidates
-              await db.collection('L1_Candidates').doc(applicantId).set({
-                  ...applicant,  // Preserve existing applicant data
-                  status: "Shortlisted"  // Add status as "Shortlisted"
-              });
-              console.log(`Applicant ID ${applicantId} added to L1_Candidates with status "Shortlisted"`);
-          }
-  
-          console.log(`Applicant ID ${applicantId} status updated to ${newStatus}`);
-      } catch (error) {
-          console.error("Error updating status: ", error);
-      }
-  };
-  
+        const applicant = applicants.find(app => app.id === applicantId);
+        
+        // Check for invalid status change
+        if ((applicant.status === "Shortlisted" && newStatus === "Rejected") || 
+            (applicant.status === "Rejected" && newStatus === "Shortlisted")) {
+            alert(`Applicant ID ${applicantId} cannot be changed from ${applicant.status} to ${newStatus}.`);
+            return;
+        }
+
+        // Update the applicant's status in Firestore
+        try {
+            await db.collection('applicants').doc(applicantId).update({
+                status: newStatus
+            });
+
+            // Update local state with the new status
+            setApplicants(prevApplicants => 
+                prevApplicants.map(app => 
+                    app.id === applicantId ? { ...app, status: newStatus } : app
+                )
+            );
+
+            // If the new status is "Shortlisted," add to L1_Candidates collection
+            if (newStatus === "Shortlisted") {
+                await db.collection('L1_Candidates').doc(applicantId).set({
+                    ...applicant,  // Preserve existing applicant data
+                    status: "Shortlisted"  // Add status as "Shortlisted"
+                });
+                console.log(`Applicant ID ${applicantId} added to L1_Candidates with status "Shortlisted"`);
+            }
+
+            console.log(`Applicant ID ${applicantId} status updated to ${newStatus}`);
+        } catch (error) {
+            console.error("Error updating status: ", error);
+        }
+    };
+
+    // Function to navigate to EmployeeApplicants page
+    const handleAddProfileClick = () => {
+      navigate('/e-applicant'); // Change the path according to your routing
+    };
+
+    
 
     return (
         <div className='e-screening-container'>
             <EmployeeDashboard onToggleSidebar={setCollapsed} />
             <div className={`e-screening-content ${collapsed ? 'collapsed' : ''}`}>
-                <h2>Applicants Details</h2>
+                <div className="header-container">
+    <h2>Applicants Details</h2>
+    <button className="add-profile-button" onClick={handleAddProfileClick}>
+        + Add Profile
+    </button>
+</div>
+
                 <div className='table-responsive'>
                     <table className="styled-table">
                         <thead>
