@@ -17,11 +17,13 @@ const EmployeeClient = () => {
     const [mobile, setMobile] = useState('');
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('Active');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const clientDocRef = doc(db, 'clients_data', user.uid); // Reference to the document
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         // Create a new client object
         const newClient = {
@@ -62,6 +64,9 @@ const EmployeeClient = () => {
 
         } catch (error) {
             console.error('Error storing client data:', error);
+            alert('Error storing client data. Please try again.');
+        }finally {
+            setIsSubmitting(false); // End submission
         }
     };
 
@@ -170,8 +175,8 @@ const EmployeeClient = () => {
                                        Back
                                     </Button>
                                     &nbsp;
-                                    <Button type="submit" variant="primary">
-                                        Add Client
+                                    <Button type="submit" variant="primary" disabled={isSubmitting}>
+                                        {isSubmitting ? "Adding..." : "Add Client"} {/* Change text based on submission status */}
                                     </Button>
                                 </div>
                             </Form>
