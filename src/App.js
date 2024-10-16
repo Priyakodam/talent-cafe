@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"; // Replace Redirect with Navigate
 import "bootstrap/dist/css/bootstrap.min.css";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { QueryClient, QueryClientProvider } from "react-query";
 import Login from "./Components/Login/Login"
 import { AuthProvider }  from "./Components/Context/AuthContext";
@@ -13,6 +14,7 @@ import EmployeeTotalData from "./Components/Employee/EmployeeTotalData/EmployeeT
 import EmployeeOpenPositions from "./Components/Employee/OpenPositions/EmployeeOpenPositions";
 import EmployeeClient from "./Components/Employee/Client/EmployeeClient";
 import EmployeeScreening from "./Components/Employee/Screening/EmployeeScreening";
+import EmployeeViewClients from "./Components/Employee/Client/EmployeeViewClients";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,7 @@ function App() {
       <Route path="/e-dashboard" element={<EmployeeTotalData/>} />
       <Route path="/e-openpositions" element={<EmployeeOpenPositions/>} />
       <Route path="/e-clients" element={<EmployeeClient/>} />
+      <Route path="/e-view-clients" element={<EmployeeViewClients/>} />
       <Route path="/e-screening" element={<EmployeeScreening/>} />
       </Routes>
     </BrowserRouter>
