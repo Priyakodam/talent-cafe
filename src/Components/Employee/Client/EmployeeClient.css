@@ -37,3 +37,15 @@
     }
   }
   
+
+  .clear-search-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #6c757d; /* Change color as per your theme */
+    font-size: 1rem; /* Adjust the size of the icon */
+}
+
+.clear-search-button:hover {
+    color: #dc3545; /* Change color on hover */
+}

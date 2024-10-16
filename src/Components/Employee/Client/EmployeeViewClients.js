@@ -6,6 +6,7 @@ import "./EmployeeClient.css";
 import { db } from "../../Firebase/FirebaseConfig"; // Import Firestore config
 import {  doc, getDoc } from "firebase/firestore"; 
 import Table from 'react-bootstrap/Table';
+import Form from 'react-bootstrap/Form';
 
 
 const EmployeeViewClients = () => {
@@ -15,6 +16,8 @@ const EmployeeViewClients = () => {
     const [clients, setClients] = useState([]); // State to hold clients data
     const [loading, setLoading] = useState(true); // State to handle loading status
     const [error, setError] = useState(null); // State to handle errors
+    const [searchQuery, setSearchQuery] = useState('');
+    
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -45,13 +48,46 @@ const EmployeeViewClients = () => {
         navigate('/e-clients'); // Change this path to your actual route for adding clients
     };
 
+    const filteredClients = clients.filter(client => 
+        client.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.contactPerson.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.designation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        client.mobile.includes(searchQuery) 
+    );
+
+    const clearSearch = () => {
+        setSearchQuery('');
+    };
+
     return (
         <div className='e-clients-container'>
             <EmployeeDashboard onToggleSidebar={setCollapsed} />
             <div className={`e-clients-content ${collapsed ? 'collapsed' : ''}`}>
-            <button onClick={handleAddClient} className="btn btn-primary mb-3">
-            <i className="fas fa-plus"></i> Add Client
-                </button>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                    <button onClick={handleAddClient} className="btn btn-primary">
+                        <i className="fas fa-plus"></i> Add Client
+                    </button>
+                    <div className="position-relative">
+                        <Form.Control
+                            type="text"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ width: '200px' }} // Set width as needed
+                        />
+                        {searchQuery && (
+                            <button 
+                                className="clear-search-button" 
+                                onClick={clearSearch} 
+                                style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }}
+                            >
+                                <i className="fas fa-times"></i>
+                            </button>
+                        )}
+                    </div>
+                </div>
                 <h2>Clients List</h2>
                 
                 {loading && <p>Loading clients...</p>}
@@ -70,7 +106,7 @@ const EmployeeViewClients = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map((client, index) => (
+                        {filteredClients.map((client, index) => (
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{client.companyName}</td>
