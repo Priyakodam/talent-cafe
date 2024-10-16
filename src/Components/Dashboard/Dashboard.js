@@ -2,20 +2,11 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   FaTachometerAlt,
-  FaAddressBook,
-  FaFileInvoice,
-  FaUsers,
   FaSignOutAlt,
-  FaReceipt,
+
   FaChalkboardTeacher,
   FaUserTie,
-  FaUser ,
-  FaFileInvoiceDollar,
-  FaUserGraduate ,
-  FaMoneyBillWave,
-  FaUserPlus,
-  FaBullseye, 
-  FaChartLine  
+  FaUserPlus, 
 } from "react-icons/fa"; 
 import { IoHomeOutline } from "react-icons/io5";
 import "./Dashboard.css";
