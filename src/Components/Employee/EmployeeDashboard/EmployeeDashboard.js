@@ -3,19 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaAddressBook,
-  FaFileInvoice,
-  FaUsers,
   FaSignOutAlt,
-  FaReceipt,
-  FaChalkboardTeacher,
   FaUserTie,
-  FaUser ,
-  FaFileInvoiceDollar,
-  FaUserGraduate ,
-  FaMoneyBillWave,
-  FaUserPlus,
-  FaBullseye, 
-  FaChartLine  
+  FaUserPlus, 
 } from "react-icons/fa"; 
 import { IoHomeOutline } from "react-icons/io5";
 import "./EmployeeDashboard.css";
@@ -89,8 +79,8 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
-            <li className={`nav-item ${location.pathname === '/e-clients'? 'active' : ''}`}>
-              <Link className="nav-link" to="/e-clients" onClick={handleNavItemClick}>
+            <li className={`nav-item ${location.pathname === '/e-view-clients'? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-view-clients" onClick={handleNavItemClick}>
                 <FaUserPlus    className="nav-icon" />
                 {!collapsed && <span className="link_text">Clients</span>}
               </Link>
