@@ -13,6 +13,7 @@ import EmployeeTotalData from "./Components/Employee/EmployeeTotalData/EmployeeT
 import EmployeeOpenPositions from "./Components/Employee/OpenPositions/EmployeeOpenPositions";
 import EmployeeClient from "./Components/Employee/Client/EmployeeClient";
 import EmployeeScreening from "./Components/Employee/Screening/EmployeeScreening";
+import EmployeeApplicant from "./Components/Employee/Applicants/EmployeeApplicants";
 
 const queryClient = new QueryClient();
 
@@ -29,14 +30,12 @@ function App() {
       <Route path="/clients" element={<ClientList />} />
       <Route path="/screening" element={<Screening />} />
       <Route path="/dashboard" element={<TotalData/>} />
-
-     
-
       <Route path="/addemployee" element={<AddEmployee/>} />
       <Route path="/e-dashboard" element={<EmployeeTotalData/>} />
       <Route path="/e-openpositions" element={<EmployeeOpenPositions/>} />
       <Route path="/e-clients" element={<EmployeeClient/>} />
       <Route path="/e-screening" element={<EmployeeScreening/>} />
+      <Route path="/e-applicant" element={<EmployeeApplicant/>} />
       </Routes>
     </BrowserRouter>
     </AuthProvider>
