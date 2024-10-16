@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './AddEmployee.css'; // Custom styles for the AddEmployee form
 import Dashboard from '../Dashboard/Dashboard';
 import { db, auth } from '../Firebase/FirebaseConfig'; // Import Firebase Firestore and Auth
-
+import firebase from 'firebase/compat/app'; 
 const AddEmployee = () => {
   // State to capture form input
   const [employeeData, setEmployeeData] = useState({
@@ -44,7 +44,9 @@ const AddEmployee = () => {
         mobile: employeeData.mobile,
         email: employeeData.email,
         designation: employeeData.designation,
-        dateOfJoining: new Date(employeeData.dateOfJoining)
+        password: employeeData.password,
+        dateOfJoining: new Date(employeeData.dateOfJoining),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() 
       });
 
       alert('Employee added successfully');
@@ -56,7 +58,8 @@ const AddEmployee = () => {
         email: '',
         designation: '',
         password: '',
-        dateOfJoining: ''
+        dateOfJoining: '',
+        password: '',
       });
     } catch (error) {
       console.error('Error adding employee: ', error);

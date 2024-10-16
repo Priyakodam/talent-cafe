@@ -1,29 +1,38 @@
-import React, { useState } from 'react';
+import React,{useState} from 'react';
+import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
+import { useAuth }  from "../../Context/AuthContext";
+import "./EmployeeClient.css";
 import { Card, Form, Row, Col, Button } from 'react-bootstrap';
+const EmployeeClient = () => {
+    const { user } = useAuth();
+    const [collapsed, setCollapsed] = useState(false); 
+    const [companyName, setCompanyName] = useState('');
+    const [contactPerson, setContactPerson] = useState('');
+    const [designation, setDesignation] = useState('');
+    const [mobile, setMobile] = useState('');
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState('Active');
 
-const Clients = () => {
-  const [companyName, setCompanyName] = useState('');
-  const [contactPerson, setContactPerson] = useState('');
-  const [designation, setDesignation] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('Active'); // Default status
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Add logic to handle form submission
+        console.log({ companyName, contactPerson, designation, mobile, email, status });
+        // Reset form after submission
+        setCompanyName('');
+        setContactPerson('');
+        setDesignation('');
+        setMobile('');
+        setEmail('');
+        setStatus('Active');
+      };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add logic to handle form submission
-    console.log({ companyName, contactPerson, designation, mobile, email, status });
-    // Reset form after submission
-    setCompanyName('');
-    setContactPerson('');
-    setDesignation('');
-    setMobile('');
-    setEmail('');
-    setStatus('Active');
-  };
 
+    
   return (
-    <div className="d-flex justify-content-center align-items-center mt-5 pt-5">
+    <div className='e-clients-container'>
+    <EmployeeDashboard onToggleSidebar={setCollapsed} />
+    <div className={`e-clients-content ${collapsed ? 'collapsed' : ''}`}>
+    <div className="d-flex justify-content-center align-items-center mt-2 pt-5">
       <Card className="mt-4" style={{ width: '50rem' }}>
         <Card.Header >
           <h2>Add Client</h2>
@@ -97,7 +106,7 @@ const Clients = () => {
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
                     required
-                    pattern="[0-9]{10}" // Assuming a 10-digit mobile number
+                    pattern="[0-9]{10}" 
                   />
                 </Form.Group>
               </Col>
@@ -130,7 +139,10 @@ const Clients = () => {
         </Card.Body>
       </Card>
     </div>
-  );
-};
+   
+    </div>
+    </div>
+  )
+}
 
-export default Clients;
+export default EmployeeClient

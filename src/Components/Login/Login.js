@@ -9,7 +9,7 @@ import logo from '../Img/Company_logo.png';
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,37 +24,45 @@ const Login = () => {
     e.preventDefault();
     setIsSubmitting(true);
   
-    // Check if the entered email and password are correct
-    if (email !== 'admin@gmail.com' || password !== 'admin@123') {
-      setError('Invalid email or password. Please try again.');
+    // Check if the entered email and password are for admin
+    if (email === 'admin@gmail.com' && password === 'admin@123') {
+      login({
+        uid: 'admin',
+        email: 'admin@gmail.com',
+        name: 'Admin',
+      });
+      navigate('/dashboard'); // Navigate to the admin dashboard
       setIsSubmitting(false);
       return;
     }
-  
+
     try {
+      // Try logging in using Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-  
-      // Fetch additional user data from Firestore
-      const userDoc = await db.collection('users').doc(user.uid).get();
-      const userData = userDoc.data();
-  
-      // Ensure name is part of the user object
-      login({
-        uid: user.uid,
-        email: user.email,
-        name: userData?.name || 'Guest', // Default to 'Guest' if name is not available
-        // Add any other user data you need
-      });
-  
-      navigate('/dashboard');
+
+      // Fetch the employee data from the 'addemployee' Firestore collection
+      const userDoc = await db.collection('addemployee').doc(user.uid).get();
+      
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+
+        // Log in and navigate to employee dashboard
+        login({
+          uid: user.uid,
+          email: user.email,
+          name: userData.name || 'Employee', // Default to 'Employee' if no name is found
+        });
+        navigate('/e-dashboard'); // Navigate to the employee dashboard
+      } else {
+        setError('No employee record found.');
+      }
     } catch (err) {
       setError('Invalid email or password. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
-  
 
   const canSubmit = email.trim() !== '' && password.trim() !== '';
 
@@ -107,18 +115,6 @@ const Login = () => {
                 {isSubmitting ? 'Logging in...' : 'Login'}
               </button>
             </div>
-            {/* <div className="text-center">
-            <p>
-              Don't have an account?
-              <a
-                onClick={() => navigate('/signUp')}
-                style={{ textDecoration: 'none', color: '#007bff', cursor: 'pointer', padding: '0', }}
-              >
-               &nbsp;Register
-              </a>
-              &nbsp;here
-            </p>
-            </div> */}
           </form>
         </div>
       </div>
