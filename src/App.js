@@ -8,7 +8,12 @@ import OpenPositions from "./Components/OpenPositions/OpenPositions";
 import ClientList from "./Components/Clients/ClientList";
 import Screening from "./Components/Screening/Screening";
 import TotalData from "./Components/TotalData/TotalData";
+
 import Clients from "./Components/Clients";
+
+import AddEmployee from "./Components/AddEmployee/AddEmployee";
+
+
 const queryClient = new QueryClient();
 
 function App() {
@@ -24,7 +29,11 @@ function App() {
       <Route path="/clients" element={<ClientList />} />
       <Route path="/screening" element={<Screening />} />
       <Route path="/dashboard" element={<TotalData/>} />
+
       <Route path="/client-form" element={<Clients/>} />
+
+      <Route path="/addemployee" element={<AddEmployee/>} />
+
       </Routes>
     </BrowserRouter>
     </AuthProvider>
