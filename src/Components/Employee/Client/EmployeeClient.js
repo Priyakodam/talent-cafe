@@ -164,7 +164,7 @@ const EmployeeClient = () => {
                                                 required
                                             >
                                                 <option value="Active">Active</option>
-                                                <option value="Inactive">Inactive</option>
+                                                <option value="Inactive">InActive</option>
                                             </Form.Select>
                                         </Form.Group>
                                     </Col>
