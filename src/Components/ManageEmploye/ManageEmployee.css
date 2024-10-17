@@ -1,0 +1,300 @@
+/* Container and Content */
+.manage-employe-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh; /* Center vertically */
+    padding: 20px;
+    /* background-color: #f7f7f7; */
+  }
+  
+  .manage-employe-content {
+    width: 100%;
+    max-width: 1200px;
+    background-color: white;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-left: 200px;
+    margin-top: 80px;
+  }
+  
+  /* Table Wrapper */
+  .table-wrapper {
+    overflow-x: auto; /* Horizontal scrolling for small screens */
+    margin: 20px 0;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+  }
+  
+  /* Table Styles */
+  .manage-employe-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    text-align: left;
+    font-size: 16px;
+  }
+  
+  .manage-employe-table th, 
+  .manage-employe-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  /* Table Header */
+  .manage-employe-table th {
+    background-color: #007bff;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  /* Alternating Row Colors */
+  .manage-employe-table tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  /* Row Hover Effect */
+  .manage-employe-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  /* Center Text */
+  .text-center {
+    text-align: center;
+    color: #888;
+  }
+  
+  /* Action Icons */
+  .manage-employe-table .action-icon {
+    cursor: pointer;
+    margin: 0 10px;
+    font-size: 18px;
+    color: #007bff;
+    transition: color 0.3s ease;
+  }
+  
+  .manage-employe-table .action-icon:hover {
+    color: #ff0000; /* Change color on hover */
+  }
+  
+  /* Responsive Table */
+  @media (max-width: 768px) {
+    .manage-employe-table {
+      font-size: 14px;
+    }
+  
+    .manage-employe-content {
+      padding: 15px;
+    }
+  
+    .manage-employe-table .action-icon {
+      font-size: 16px;
+      margin: 0 5px;
+    }
+  }
+  
+  .employee-management-container {
+  width: 70%;
+  margin: auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.employee-management-container h2 {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-field {
+  width: 48%;
+}
+
+.form-field label {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.employee-list-container {
+  margin-top: 40px;
+}
+
+.employee-list-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-list-table th, .employee-list-table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.employee-list-table th {
+  background-color: #f2f2f2;
+}
+
+.action-icon {
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.updateemployee {
+  padding: 20px;
+  margin: auto;
+  max-width: 600px;
+  text-align: left;
+  border-radius: 5px;
+}
+
+.updateemployee-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #007bff;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center; /* This can remain centered */
+}
+
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  flex: 0 0 48%; /* Adjusts to take 48% width */
+  text-align: left; /* Ensures label is aligned left */
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.updateemployee-submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.updateemployee-submit-btn:hover {
+  background-color: #0056b3;
+}
+
+
+.update-employee-submit-btn {
+  background-color: #007bff; /* Blue color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  width: 30%;
+}
+
+.update-employee-submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.updatelabel{
+  text-align: start;
+}
+
+.updateemployee {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: auto;
+  text-align: center;
+}
+
+.updateemployee-heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #007bff;
+  padding: 10px;
+  border-radius: 5px;
+}
+.updateemployee-submit-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 30%;
+  margin-top: 20px;
+}
+
+.updateemployee-submit-btn:hover {
+  background-color: #0056b3;
+}

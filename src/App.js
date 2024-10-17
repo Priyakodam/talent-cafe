@@ -13,6 +13,7 @@ import EmployeeTotalData from "./Components/Employee/EmployeeTotalData/EmployeeT
 import EmployeeOpenPositions from "./Components/Employee/OpenPositions/EmployeeOpenPositions";
 import EmployeeClient from "./Components/Employee/Client/EmployeeClient";
 import EmployeeScreening from "./Components/Employee/Screening/EmployeeScreening";
+import ManageEmployee from "./Components/ManageEmploye/ManageEmployee";
 
 const queryClient = new QueryClient();
 
@@ -30,9 +31,8 @@ function App() {
       <Route path="/screening" element={<Screening />} />
       <Route path="/dashboard" element={<TotalData/>} />
 
-     
-
       <Route path="/addemployee" element={<AddEmployee/>} />
+      <Route path="/manageemployee" element={<ManageEmployee/>} />
       <Route path="/e-dashboard" element={<EmployeeTotalData/>} />
       <Route path="/e-openpositions" element={<EmployeeOpenPositions/>} />
       <Route path="/e-clients" element={<EmployeeClient/>} />
