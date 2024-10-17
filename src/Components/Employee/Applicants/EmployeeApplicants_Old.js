@@ -3,7 +3,6 @@ import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { Form, Button, Col, Row, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { arrayUnion } from 'firebase/firestore';
 import { db, storage } from '../../Firebase/FirebaseConfig'; // Make sure to import db and storage
 import "./EmployeeApplicants.css";
 
@@ -57,47 +56,31 @@ const EmployeeApplicants = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     // Format the date of birth before saving
     const formattedDateOfBirth = formatDateToDDMMYYYY(formData.dateOfBirth);
-  
+
     // Upload resume to Firebase Storage
     try {
       const resumeRef = storage.ref(`resumes/${formData.resume.name}`);
       await resumeRef.put(formData.resume);
       const resumeURL = await resumeRef.getDownloadURL();
-  
-      // Prepare data for the new applicant
+
+      // Prepare data to be saved in Firestore
       const applicantData = {
         ...formData,
         userName: user.name,
-        userId: user.uid,
-        status: 'Applied',
+        userId: user.uid, 
+        status:'Applied',
         resume: resumeURL, // Store the download URL of the resume
         dateOfBirth: formattedDateOfBirth, // Store the formatted date of birth
         createdAt: new Date(),
       };
-  
-      // Reference the document with userId as the document ID
-      const applicantDocRef = db.collection('applicants').doc(user.uid);
-  
-      // Fetch the existing applicant data
-      const doc = await applicantDocRef.get();
-      
-      if (doc.exists) {
-        // Document exists, update the applicants array
-        await applicantDocRef.update({
-          applicants: arrayUnion(applicantData) // Use arrayUnion here
-        });
-      } else {
-        // Document does not exist, create a new one with the applicants array
-        await applicantDocRef.set({
-          applicants: [applicantData] // Initialize with the first applicant
-        });
-      }
-  
+
+      // Store the applicant data in Firestore
+      await db.collection('applicants').add(applicantData);
       alert('Application submitted successfully!');
-      // navigate('/e-screening');
+      navigate('/e-screening');
     } catch (error) {
       console.error('Error uploading resume or saving data:', error);
       alert('Error submitting application. Please try again.');
@@ -105,7 +88,6 @@ const EmployeeApplicants = () => {
       setLoading(false);
     }
   };
-  
 
   const handlebackclick = () => {
     navigate('/e-screening'); // Change this path to your actual route for adding clients

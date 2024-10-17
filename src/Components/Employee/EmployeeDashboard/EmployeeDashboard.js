@@ -99,6 +99,12 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
                 {!collapsed && <span className="link_text">Screening</span>}
               </Link>
             </li>
+            <li className={`nav-item ${location.pathname === '/e-L1candidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-L1candidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">L1 Candidates</span>}
+              </Link>
+            </li>
             
 
            
