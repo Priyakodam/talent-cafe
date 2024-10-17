@@ -67,7 +67,12 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
                 {!collapsed && <span className="link_text">Dashboard</span>}
               </Link>
             </li>
-
+            <li className={`nav-item ${location.pathname === '/e-view-clients'? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-view-clients" onClick={handleNavItemClick}>
+                <FaUserPlus    className="nav-icon" />
+                {!collapsed && <span className="link_text">Clients</span>}
+              </Link>
+            </li>
            
 
            
@@ -79,12 +84,7 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
-            <li className={`nav-item ${location.pathname === '/e-view-clients'? 'active' : ''}`}>
-              <Link className="nav-link" to="/e-view-clients" onClick={handleNavItemClick}>
-                <FaUserPlus    className="nav-icon" />
-                {!collapsed && <span className="link_text">Clients</span>}
-              </Link>
-            </li>
+            
 
             {/* <li className={`nav-item ${location.pathname === '/e-applicant' ? 'active' : ''}`}>
               <Link className="nav-link" to="/e-applicant" onClick={handleNavItemClick}>
