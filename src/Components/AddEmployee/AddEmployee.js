@@ -3,6 +3,7 @@ import './AddEmployee.css'; // Custom styles for the AddEmployee form
 import Dashboard from '../Dashboard/Dashboard';
 import { db, auth } from '../Firebase/FirebaseConfig'; // Import Firebase Firestore and Auth
 import firebase from 'firebase/compat/app'; 
+
 const AddEmployee = () => {
   // State to capture form input
   const [employeeData, setEmployeeData] = useState({

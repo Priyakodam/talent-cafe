@@ -14,6 +14,7 @@ import EmployeeTotalData from "./Components/Employee/EmployeeTotalData/EmployeeT
 import EmployeeOpenPositions from "./Components/Employee/OpenPositions/EmployeeOpenPositions";
 import EmployeeClient from "./Components/Employee/Client/EmployeeClient";
 import EmployeeScreening from "./Components/Employee/Screening/EmployeeScreening";
+import ManageEmployee from "./Components/ManageEmploye/ManageEmployee";
 import EmployeeApplicant from "./Components/Employee/Applicants/EmployeeApplicants";
 import EmployeeViewClients from "./Components/Employee/Client/EmployeeViewClients";
 import EmpL1Candidates from './Components/Employee/Screening/EmpL1Candidates';
@@ -36,6 +37,7 @@ function App() {
       <Route path="/screening" element={<Screening />} />
       <Route path="/dashboard" element={<TotalData/>} />
       <Route path="/addemployee" element={<AddEmployee/>} />
+      <Route path="/manageemployee" element={<ManageEmployee/>} />
       <Route path="/e-dashboard" element={<EmployeeTotalData/>} />
       <Route path="/e-openpositions" element={<EmployeeOpenPositions/>} />
       <Route path="/e-clients" element={<EmployeeClient/>} />
