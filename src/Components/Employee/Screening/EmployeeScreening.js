@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
-import { db } from '../../Firebase/FirebaseConfig'; // Import the Firestore database
+import { db } from '../../Firebase/FirebaseConfig';
+import { arrayUnion,arrayRemove } from 'firebase/firestore';
 import "./EmployeeScreening.css";
 
 const EmployeeScreening = () => {
     const { user } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
     const [applicants, setApplicants] = useState([]);
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate();
 
     useEffect(() => {
       const fetchApplicants = async () => {
           try {
-              const snapshot = await db.collection('applicants').get();
-              const applicantsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+              const snapshot = await db.collection('applicants').doc(user.uid).get();
+              let applicantsData = [];
 
-              // Sort applicants by createdAt timestamp, newest first
-              applicantsData.sort((a, b) => b.createdAt - a.createdAt);
+              if (snapshot.exists) {
+                  const data = snapshot.data();
+                  if (Array.isArray(data.applicants)) {
+                      applicantsData = [...data.applicants];
+                  }
+              }
+
+              // Reverse the order so that the 0th index comes last
+              applicantsData.reverse();
 
               setApplicants(applicantsData);
           } catch (error) {
@@ -27,64 +35,72 @@ const EmployeeScreening = () => {
       };
 
       fetchApplicants();
-  }, []);
+  }, [user.uid]);
 
-    const handleActionChange = async (applicantId, newStatus) => {
-        const applicant = applicants.find(app => app.id === applicantId);
-        
-        // Check for invalid status change
-        if ((applicant.status === "Shortlisted" && newStatus === "Rejected") || 
-            (applicant.status === "Rejected" && newStatus === "Shortlisted")) {
-            alert(`Applicant ID ${applicantId} cannot be changed from ${applicant.status} to ${newStatus}.`);
-            return;
-        }
+  const handleActionChange = async (index, newStatus) => {
+      const applicant = applicants[index];
 
-        // Update the applicant's status in Firestore
-        try {
-            await db.collection('applicants').doc(applicantId).update({
-                status: newStatus
-            });
+      if ((applicant.status === "Shortlisted" && newStatus === "Rejected") ||
+          (applicant.status === "Rejected" && newStatus === "Shortlisted")) {
+          alert(`Applicant at index ${index} cannot be changed from ${applicant.status} to ${newStatus}.`);
+          return;
+      }
 
-            // Update local state with the new status
-            setApplicants(prevApplicants => 
-                prevApplicants.map(app => 
-                    app.id === applicantId ? { ...app, status: newStatus } : app
-                )
-            );
+      try {
+          // Remove the original applicant data from Firestore
+          await db.collection('applicants').doc(user.uid).update({
+              applicants: arrayRemove(applicant)
+          });
 
-            // If the new status is "Shortlisted," add to L1_Candidates collection
-            if (newStatus === "Shortlisted") {
-                await db.collection('L1_Candidates').doc(applicantId).set({
-                    ...applicant,  // Preserve existing applicant data
-                    status: "Shortlisted"  // Add status as "Shortlisted"
-                });
-                console.log(`Applicant ID ${applicantId} added to L1_Candidates with status "Shortlisted"`);
-            }
+          // Update the status of the applicant locally
+          const updatedApplicant = { ...applicant, status: newStatus };
 
-            console.log(`Applicant ID ${applicantId} status updated to ${newStatus}`);
-        } catch (error) {
-            console.error("Error updating status: ", error);
-        }
-    };
+          // Update Firestore by adding the updated applicant data
+          await db.collection('applicants').doc(user.uid).update({
+              applicants: arrayUnion(updatedApplicant)
+          });
 
-    // Function to navigate to EmployeeApplicants page
-    const handleAddProfileClick = () => {
-      navigate('/e-applicant'); // Change the path according to your routing
-    };
+          // Update the local state
+          setApplicants(prevApplicants => {
+              const newApplicants = [...prevApplicants];
+              newApplicants[index] = updatedApplicant;
+              return newApplicants;
+          });
 
-    
+          // If the new status is "Shortlisted," add to L1_Candidates collection
+          if (newStatus === "Shortlisted") {
+              await db.collection('L1_Candidates').doc(user.uid).set({
+                  applicants: arrayUnion({
+                      ...updatedApplicant,
+                      L1Status: 'L1 Interview Scheduled',
+                      createdAt: new Date(),
+                  })
+              }, { merge: true });
+              console.log(`Applicant at index ${index} added to L1_Candidates with status "Shortlisted"`);
+          }
+
+          console.log(`Applicant at index ${index} status updated to ${newStatus}`);
+      } catch (error) {
+          console.error("Error updating status: ", error);
+      }
+  };
+
+  const handleAddProfileClick = () => {
+      navigate('/e-applicant');
+  };
+
+
 
     return (
         <div className='e-screening-container'>
             <EmployeeDashboard onToggleSidebar={setCollapsed} />
             <div className={`e-screening-content ${collapsed ? 'collapsed' : ''}`}>
                 <div className="header-container">
-    <h2>Applicants Details</h2>
-    <button className="add-profile-button" onClick={handleAddProfileClick}>
-        + Add Profile
-    </button>
-</div>
-
+                    <h2>Applicants Details</h2>
+                    <button className="add-profile-button" onClick={handleAddProfileClick}>
+                        + Add Profile
+                    </button>
+                </div>
                 <div className='table-responsive'>
                     <table className="styled-table">
                         <thead>
@@ -107,12 +123,12 @@ const EmployeeScreening = () => {
                                 <th>Source</th>
                                 <th>Resume</th>
                                 <th>Status</th>
-                                <th>Action</th> {/* New Action Column */}
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {applicants.map((applicant) => (
-                                <tr key={applicant.id}>
+                        {applicants.map((applicant, index) => (
+                                <tr key={index}>
                                     <td>{applicant.name}</td>
                                     <td>{applicant.email}</td>
                                     <td>{applicant.mobile}</td>
@@ -140,9 +156,9 @@ const EmployeeScreening = () => {
                                         </a>
                                     </td>
                                     <td>{applicant.status}</td>
-                                    <td> {/* Action Dropdown */}
-                                        <select 
-                                            onChange={(e) => handleActionChange(applicant.id, e.target.value)} 
+                                    <td>
+                                        <select
+                                            onChange={(e) => handleActionChange(index, e.target.value)}
                                             disabled={applicant.status === "Shortlisted" || applicant.status === "Rejected"}
                                         >
                                             <option value="">Select</option>
