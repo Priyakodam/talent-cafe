@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import "./EmployeeClient.css";
 import { Card, Form, Row, Col, Button } from 'react-bootstrap';
 import { db } from "../../Firebase/FirebaseConfig";
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc} from 'firebase/firestore';
 
 const EmployeeClient = () => {
     const { user } = useAuth();
@@ -19,7 +19,7 @@ const EmployeeClient = () => {
     const [status, setStatus] = useState('Active');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const clientDocRef = doc(db, 'clients_data', user.uid); // Reference to the document
+    const clientsCollectionRef = collection(db, 'clients'); // Reference to the collection
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,24 +33,13 @@ const EmployeeClient = () => {
             mobile,
             email,
             status,
+            employeeUid:user.uid,
             timestamp: new Date(),
         };
 
         try {
-            // Fetch existing client data
-            const docSnap = await getDoc(clientDocRef);
-            if (docSnap.exists()) {
-                // Document exists, update it
-                await updateDoc(clientDocRef, {
-                    clients: [...(docSnap.data().clients || []), newClient], // Append new client
-                });
-            } else {
-                // Document doesn't exist, create it
-                await setDoc(clientDocRef, {
-                    clients: [newClient], // Create new array with the first client
-                });
-            }
-
+            // Add the new client to the collection
+            await addDoc(clientsCollectionRef, newClient);
             console.log('Client added successfully');
             alert('Client added successfully!');
 
@@ -65,7 +54,7 @@ const EmployeeClient = () => {
         } catch (error) {
             console.error('Error storing client data:', error);
             alert('Error storing client data. Please try again.');
-        }finally {
+        } finally {
             setIsSubmitting(false); // End submission
         }
     };
