@@ -74,13 +74,22 @@ const AdminDashboard = ({ onToggleSidebar }) => {
                 {!collapsed && <span className="link_text">Add Employee</span>}
               </Link>
             </li>
-
+            
             <li className={`nav-item ${location.pathname === '/manageemployee' ? 'active' : ''}`}>
               <Link className="nav-link" to="/manageemployee" onClick={handleNavItemClick}>
                 <FaTachometerAlt className="nav-icon" />
                 {!collapsed && <span className="link_text">Manage Employee</span>}
               </Link>
             </li>
+
+            <li className={`nav-item ${location.pathname === '/clients'|| location.pathname === '/lead' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/clients" onClick={handleNavItemClick}>
+                <FaUserTie  className="nav-icon" />
+                {!collapsed && <span className="link_text">Clients</span>}
+              </Link>
+            </li>
+
+         
 
             <li className={`nav-item ${location.pathname === '/openpositions' ? 'active' : ''}`}>
               <Link className="nav-link" to="/openpositions" onClick={handleNavItemClick}>
@@ -91,12 +100,7 @@ const AdminDashboard = ({ onToggleSidebar }) => {
 
            
 
-            <li className={`nav-item ${location.pathname === '/clients'|| location.pathname === '/lead' ? 'active' : ''}`}>
-              <Link className="nav-link" to="/clients" onClick={handleNavItemClick}>
-                <FaUserTie  className="nav-icon" />
-                {!collapsed && <span className="link_text">Clients</span>}
-              </Link>
-            </li>
+         
 
             <li className={`nav-item ${location.pathname === '/screening'? 'active' : ''}`}>
               <Link className="nav-link" to="/screening" onClick={handleNavItemClick}>

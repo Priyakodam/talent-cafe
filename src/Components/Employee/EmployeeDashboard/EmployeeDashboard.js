@@ -3,19 +3,9 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaAddressBook,
-  FaFileInvoice,
-  FaUsers,
   FaSignOutAlt,
-  FaReceipt,
-  FaChalkboardTeacher,
   FaUserTie,
-  FaUser ,
-  FaFileInvoiceDollar,
-  FaUserGraduate ,
-  FaMoneyBillWave,
-  FaUserPlus,
-  FaBullseye, 
-  FaChartLine  
+  FaUserPlus, 
 } from "react-icons/fa"; 
 import { IoHomeOutline } from "react-icons/io5";
 import "./EmployeeDashboard.css";
@@ -77,7 +67,12 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
                 {!collapsed && <span className="link_text">Dashboard</span>}
               </Link>
             </li>
-
+            <li className={`nav-item ${location.pathname === '/e-view-clients'? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-view-clients" onClick={handleNavItemClick}>
+                <FaUserPlus    className="nav-icon" />
+                {!collapsed && <span className="link_text">Clients</span>}
+              </Link>
+            </li>
            
 
            
@@ -89,17 +84,25 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
-            <li className={`nav-item ${location.pathname === '/e-clients'? 'active' : ''}`}>
-              <Link className="nav-link" to="/e-clients" onClick={handleNavItemClick}>
-                <FaUserPlus    className="nav-icon" />
-                {!collapsed && <span className="link_text">Clients</span>}
+            
+
+            {/* <li className={`nav-item ${location.pathname === '/e-applicant' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-applicant" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">Applicants</span>}
               </Link>
-            </li>
+            </li> */}
 
             <li className={`nav-item ${location.pathname === '/e-screening' ? 'active' : ''}`}>
               <Link className="nav-link" to="/e-screening" onClick={handleNavItemClick}>
                 <FaAddressBook className="nav-icon" />
                 {!collapsed && <span className="link_text">Screening</span>}
+              </Link>
+            </li>
+            <li className={`nav-item ${location.pathname === '/e-L1candidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-L1candidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">L1 Candidates</span>}
               </Link>
             </li>
             

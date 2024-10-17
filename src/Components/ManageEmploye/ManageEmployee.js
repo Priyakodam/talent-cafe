@@ -3,6 +3,7 @@ import { db, auth } from '../Firebase/FirebaseConfig'; // Import Firestore and A
 import Dashboard from '../Dashboard/Dashboard';
 import './ManageEmployee.css'; // Import CSS for this component
 import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons for action buttons
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const ManageEmploye = () => {
   const [employees, setEmployees] = useState([]);
@@ -16,6 +17,8 @@ const ManageEmploye = () => {
     password: '',
     dateOfJoining: null
   });
+
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   // Fetch employee data from Firestore on component mount
   useEffect(() => {
@@ -84,6 +87,11 @@ const ManageEmploye = () => {
     setFormValues({ ...formValues, [name]: value });
   };
 
+  const handleClose = () => {
+    // Redirect to the ManageEmployee page
+    navigate('/manageemployee');
+  };
+
   // Submit the updated employee details
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -142,87 +150,88 @@ const ManageEmploye = () => {
 
         {editEmployee ? (
           <form onSubmit={handleFormSubmit} className="updateemployee">
-  <h2 className="updateemployee-heading">Edit Employee</h2>
+            <h2 className="updateemployee-heading">Edit Employee</h2>
 
-  <div className="form-row">
-    <div className="form-group">
-      <label htmlFor="name">Name</label>
-      <input
-        type="text"
-        name="name"
-        value={formValues.name}
-        onChange={handleChange}
-        placeholder="Enter Name"
-        required
-      />
-    </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formValues.name}
+                  onChange={handleChange}
+                  placeholder="Enter Name"
+                  required
+                />
+              </div>
 
-    <div className="form-group">
-      <label htmlFor="mobile">Mobile</label>
-      <input
-        type="text"
-        name="mobile"
-        value={formValues.mobile}
-        onChange={handleChange}
-        placeholder="Enter Mobile"
-        required
-      />
-    </div>
-  </div>
+              <div className="form-group">
+                <label htmlFor="mobile">Mobile</label>
+                <input
+                  type="text"
+                  name="mobile"
+                  value={formValues.mobile}
+                  onChange={handleChange}
+                  placeholder="Enter Mobile"
+                  required
+                />
+              </div>
+            </div>
 
-  <div className="form-row">
-    <div className="form-group">
-      <label htmlFor="email">Email</label>
-      <input
-        type="email"
-        name="email"
-        value={formValues.email}
-        onChange={handleChange}
-        placeholder="Enter Email"
-        required
-      />
-    </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formValues.email}
+                  onChange={handleChange}
+                  placeholder="Enter Email"
+                  required
+                />
+              </div>
 
-    <div className="form-group">
-      <label htmlFor="designation">Designation</label>
-      <input
-        type="text"
-        name="designation"
-        value={formValues.designation}
-        onChange={handleChange}
-        placeholder="Enter Designation"
-        required
-      />
-    </div>
-  </div>
+              <div className="form-group">
+                <label htmlFor="designation">Designation</label>
+                <input
+                  type="text"
+                  name="designation"
+                  value={formValues.designation}
+                  onChange={handleChange}
+                  placeholder="Enter Designation"
+                  required
+                />
+              </div>
+            </div>
 
-  <div className="form-row">
-    <div className="form-group">
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        name="password"
-        value={formValues.password}
-        onChange={handleChange}
-        placeholder="Enter Password"
-        required
-      />
-    </div>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formValues.password}
+                  onChange={handleChange}
+                  placeholder="Enter Password"
+                  required
+                />
+              </div>
 
-    <div className="form-group">
-      <label htmlFor="dateOfJoining">Date of Joining</label>
-      <input
-        type="date"
-        name="dateOfJoining"
-        value={formValues.dateOfJoining ? formValues.dateOfJoining.toISOString().split("T")[0] : ""}
-        onChange={handleChange}
-        required
-      />
-    </div>
-  </div>
+              <div className="form-group">
+                <label htmlFor="dateOfJoining">Date of Joining</label>
+                <input
+                  type="date"
+                  name="dateOfJoining"
+                  value={formValues.dateOfJoining ? formValues.dateOfJoining.toISOString().split("T")[0] : ""}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
 
-  <button type="submit" className="updateemployee-submit-btn">Update Employee</button>
-</form>
+            <button type="submit" className="updateemployee-submit-btn">Update Employee</button>
+           
+          </form>
 
    
         ) : (

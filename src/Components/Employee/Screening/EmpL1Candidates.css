@@ -1,9 +1,9 @@
-.e-clients-container {
+.e-L1Candidates-container {
     display: flex;
     flex-direction: row;
   }
   
-  .e-clients-content {
+  .e-L1Candidates-content {
     margin-top: 60px; /* Adjust based on header height */
     margin-left: 220px; /* Adjust based on sidebar width */
     padding: 20px;
@@ -11,7 +11,7 @@
     transition: margin-left 0.3s ease, width 0.3s ease;
   }
   
-  .e-clients-content.collapsed {
+  .e-L1Candidates-content.collapsed {
     margin-left: 50px; /* Adjust based on collapsed sidebar width */
     width: calc(100% - 50px); /* Adjust width based on collapsed sidebar width */
   }
@@ -22,30 +22,18 @@
   
   /* Responsive Design */
   @media (max-width: 767px) {
-    .e-clients-container {
+    .e-L1Candidates-container {
       flex-direction: column;
     }
   
-    .e-clients-content {
+    .e-L1Candidates-content {
       margin-left: 0;
       width: 100%;
     }
   
-    .e-clients-content.collapsed {
+    .e-L1Candidates-content.collapsed {
       margin-left: 0;
       width: 100%;
     }
   }
   
-
-  .clear-search-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    color: #6c757d; /* Change color as per your theme */
-    font-size: 1rem; /* Adjust the size of the icon */
-}
-
-.clear-search-button:hover {
-    color: #dc3545; /* Change color on hover */
-}
