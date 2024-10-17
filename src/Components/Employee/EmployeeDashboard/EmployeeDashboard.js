@@ -77,8 +77,8 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
 
            
 
-            <li className={`nav-item ${location.pathname === '/e-openpositions'|| location.pathname === '/lead' ? 'active' : ''}`}>
-              <Link className="nav-link" to="/e-openpositions" onClick={handleNavItemClick}>
+            <li className={`nav-item ${location.pathname === '/e-viewopenpositions'|| location.pathname === '/lead' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-viewopenpositions" onClick={handleNavItemClick}>
                 <FaUserTie  className="nav-icon" />
                 {!collapsed && <span className="link_text">Open Positions</span>}
               </Link>

@@ -52,14 +52,6 @@ const AdminDashboard = ({ onToggleSidebar }) => {
       <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
         <div className="position-sticky">
           <ul className="nav flex-column">
-            {/* <li className="nav-item">
-              <div
-                className={`sidebar-toggle ${collapsed ? 'collapsed' : ''}`}
-                onClick={toggleSidebar}
-              >
-                <IoHomeOutline className="toggle-icon" />
-              </div>
-            </li> */}
  <h2 className="text-center">{user.fullName}</h2>
             <li className={`nav-item ${location.pathname === '/dashboard' ? 'active' : ''}`}>
               <Link className="nav-link" to="/dashboard" onClick={handleNavItemClick}>
@@ -82,6 +74,7 @@ const AdminDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
+
             <li className={`nav-item ${location.pathname === '/clients'|| location.pathname === '/lead' ? 'active' : ''}`}>
               <Link className="nav-link" to="/clients" onClick={handleNavItemClick}>
                 <FaUserTie  className="nav-icon" />
@@ -100,7 +93,7 @@ const AdminDashboard = ({ onToggleSidebar }) => {
 
            
 
-         
+           
 
             <li className={`nav-item ${location.pathname === '/screening'? 'active' : ''}`}>
               <Link className="nav-link" to="/screening" onClick={handleNavItemClick}>
