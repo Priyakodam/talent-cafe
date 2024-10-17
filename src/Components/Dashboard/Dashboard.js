@@ -68,13 +68,13 @@ const AdminDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
-            <li className={`nav-item ${location.pathname === '/addemployee' ? 'active' : ''}`}>
+            {/* <li className={`nav-item ${location.pathname === '/addemployee' ? 'active' : ''}`}>
               <Link className="nav-link" to="/addemployee" onClick={handleNavItemClick}>
                 <FaTachometerAlt className="nav-icon" />
                 {!collapsed && <span className="link_text">Add Employee</span>}
               </Link>
-            </li>
-            
+            </li> */}
+
             <li className={`nav-item ${location.pathname === '/manageemployee' ? 'active' : ''}`}>
               <Link className="nav-link" to="/manageemployee" onClick={handleNavItemClick}>
                 <FaTachometerAlt className="nav-icon" />

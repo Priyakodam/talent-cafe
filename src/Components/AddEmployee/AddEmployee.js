@@ -3,9 +3,9 @@ import './AddEmployee.css'; // Custom styles for the AddEmployee form
 import Dashboard from '../Dashboard/Dashboard';
 import { db, auth } from '../Firebase/FirebaseConfig'; // Import Firebase Firestore and Auth
 import firebase from 'firebase/compat/app'; 
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const AddEmployee = () => {
-  // State to capture form input
   const [employeeData, setEmployeeData] = useState({
     name: '',
     mobile: '',
@@ -16,8 +16,8 @@ const AddEmployee = () => {
   });
 
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate(); // Initialize the navigate hook
 
-  // Handle form input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setEmployeeData((prevData) => ({
@@ -26,21 +26,17 @@ const AddEmployee = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // Create a new user in Firebase Authentication
       const userCredential = await auth.createUserWithEmailAndPassword(
         employeeData.email,
         employeeData.password
       );
       const user = userCredential.user;
 
-      // Add employee data to Firestore, using uid as the document ID
       await db.collection('addemployee').doc(user.uid).set({
-        uid: user.uid, // Store the uid in the Firestore document
+        uid: user.uid,
         name: employeeData.name,
         mobile: employeeData.mobile,
         email: employeeData.email,
@@ -51,21 +47,23 @@ const AddEmployee = () => {
       });
 
       alert('Employee added successfully');
-
-      // Clear the form after successful submission
       setEmployeeData({
         name: '',
         mobile: '',
         email: '',
         designation: '',
         password: '',
-        dateOfJoining: '',
-        password: '',
+        dateOfJoining: ''
       });
     } catch (error) {
       console.error('Error adding employee: ', error);
       alert('Failed to add employee, please try again.');
     }
+  };
+
+  // Handle close button click to navigate to manageemployee page
+  const handleClose = () => {
+    navigate('/manageemployee'); // Redirect to the manageemployee route
   };
 
   return (
@@ -156,9 +154,18 @@ const AddEmployee = () => {
                   />
                 </div>
               </div>
-              <button type="submit" className="btn btn-primary add-employee-btn">
-                Submit
-              </button>
+              <div className="add-employee-buttons">
+                <button type="submit" className="btn btn-primary add-employee-btn">
+                  Submit
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary close-employee-btn"
+                  onClick={handleClose} 
+                >
+                  Close
+                </button>
+              </div>
             </form>
           </div>
         </div>

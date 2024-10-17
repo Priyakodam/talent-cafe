@@ -148,6 +148,13 @@ const ManageEmploye = () => {
       <div className={`manage-employe-content ${collapsed ? 'collapsed' : ''}`}>
         <h3>Manage Employees</h3>
 
+        {/* Conditionally render the Add Employee button only when not editing */}
+        {!editEmployee && (
+          <button className="add-employee-btn1" onClick={() => navigate('/addemployee')}>
+            Add New Employee
+          </button>
+        )}
+
         {editEmployee ? (
           <form onSubmit={handleFormSubmit} className="updateemployee">
             <h2 className="updateemployee-heading">Edit Employee</h2>
