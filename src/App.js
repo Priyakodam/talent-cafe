@@ -24,6 +24,7 @@ import EmployeeProductivityTracker from "./Components/Employee/ProductivityTrack
 import ManageProductivityTracker from "./Components/Employee/ProductivityTracker/ManageProductivityTracker";
 import EditProductivityTracker from "./Components/Employee/ProductivityTracker/EditProductivityTracker"; // Import Edit Component
 import ProductivityTracker from "./Components/ProductivityTracker/ProductivityTracker";
+import EmpF2FCandidates from './Components/Employee/Screening/EmpF2FCandidates';
 
 const queryClient = new QueryClient();
 
@@ -48,11 +49,12 @@ function App() {
             <Route path="/e-applicant" element={<EmployeeApplicant />} />
             <Route path="/e-L1candidates" element={<EmpL1Candidates />} />
             <Route path="/e-L2candidates" element={<EmpL2Candidates />} />
+            <Route path="/e-F2Fcandidates" element={<EmpF2FCandidates />} />
             <Route path="/e-viewopenpositions" element={<ViewOpenPositions />} />
             <Route path="/productivity-tracker" element={<EmployeeProductivityTracker />} />
             <Route path="/manage-productivity-tracker" element={<ManageProductivityTracker />} />
             <Route path="/edit-productivity-tracker" element={<EditProductivityTracker />} /> 
-            <Route path="/productivity-all-tracker" element={<ProductivityTracker/>} />
+            <Route path="/productivity-all-tracker" element={<ProductivityTracker />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

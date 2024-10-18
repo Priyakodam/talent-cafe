@@ -40,6 +40,7 @@ const AddEmployee = () => {
         name: employeeData.name,
         mobile: employeeData.mobile,
         email: employeeData.email,
+        role: "employee",
         designation: employeeData.designation,
         password: employeeData.password,
         dateOfJoining: new Date(employeeData.dateOfJoining),

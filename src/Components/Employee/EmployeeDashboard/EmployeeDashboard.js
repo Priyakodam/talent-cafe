@@ -105,6 +105,18 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
                 {!collapsed && <span className="link_text">L1 Candidates</span>}
               </Link>
             </li>
+            <li className={`nav-item ${location.pathname === '/e-L2candidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-L2candidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">L2 Candidates</span>}
+              </Link>
+            </li>
+            <li className={`nav-item ${location.pathname === '/e-F2Fcandidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/e-F2Fcandidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">F2F Candidates</span>}
+              </Link>
+            </li>
             
             <li className={`nav-item ${location.pathname === '/productivity-tracker' ? 'active' : ''}`}>
               <Link className="nav-link" to="/productivity-tracker" onClick={handleNavItemClick}>

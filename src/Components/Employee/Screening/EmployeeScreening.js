@@ -3,93 +3,111 @@ import { useNavigate } from 'react-router-dom';
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { db } from '../../Firebase/FirebaseConfig';
-import { arrayUnion,arrayRemove } from 'firebase/firestore';
+import { arrayUnion, arrayRemove } from 'firebase/firestore';
 import "./EmployeeScreening.css";
 
 const EmployeeScreening = () => {
     const { user } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
     const [applicants, setApplicants] = useState([]);
+    const [positions, setPositions] = useState([]);
+    const [selectedPosition, setSelectedPosition] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
-      const fetchApplicants = async () => {
-          try {
-              const snapshot = await db.collection('applicants').doc(user.uid).get();
-              let applicantsData = [];
+        const fetchApplicants = async () => {
+            try {
+                const snapshot = await db.collection('applicants').doc(user.uid).get();
+                let applicantsData = [];
 
-              if (snapshot.exists) {
-                  const data = snapshot.data();
-                  if (Array.isArray(data.applicants)) {
-                      applicantsData = [...data.applicants];
-                  }
-              }
+                if (snapshot.exists) {
+                    const data = snapshot.data();
+                    if (Array.isArray(data.applicants)) {
+                        applicantsData = [...data.applicants];
+                    }
+                }
 
-              // Reverse the order so that the 0th index comes last
-              applicantsData.reverse();
+                // Reverse the order so that the 0th index comes last
+                applicantsData.reverse();
 
-              setApplicants(applicantsData);
-          } catch (error) {
-              console.error("Error fetching applicants: ", error);
-          }
-      };
+                setApplicants(applicantsData);
+            } catch (error) {
+                console.error("Error fetching applicants: ", error);
+            }
+        };
 
-      fetchApplicants();
-  }, [user.uid]);
+        fetchApplicants();
+    }, [user.uid]);
 
-  const handleActionChange = async (index, newStatus) => {
-      const applicant = applicants[index];
+    const handleActionChange = async (index, newStatus) => {
+        const applicant = applicants[index];
 
-      if ((applicant.status === "Shortlisted" && newStatus === "Rejected") ||
-          (applicant.status === "Rejected" && newStatus === "Shortlisted")) {
-          alert(`Applicant at index ${index} cannot be changed from ${applicant.status} to ${newStatus}.`);
-          return;
-      }
+        if ((applicant.status === "Shortlisted" && newStatus === "Rejected") ||
+            (applicant.status === "Rejected" && newStatus === "Shortlisted")) {
+            alert(`Applicant at index ${index} cannot be changed from ${applicant.status} to ${newStatus}.`);
+            return;
+        }
 
-      try {
-          // Remove the original applicant data from Firestore
-          await db.collection('applicants').doc(user.uid).update({
-              applicants: arrayRemove(applicant)
-          });
+        try {
+            // Remove the original applicant data from Firestore
+            await db.collection('applicants').doc(user.uid).update({
+                applicants: arrayRemove(applicant)
+            });
 
-          // Update the status of the applicant locally
-          const updatedApplicant = { ...applicant, status: newStatus };
+            // Update the status of the applicant locally
+            const updatedApplicant = { ...applicant, status: newStatus };
 
-          // Update Firestore by adding the updated applicant data
-          await db.collection('applicants').doc(user.uid).update({
-              applicants: arrayUnion(updatedApplicant)
-          });
+            // Update Firestore by adding the updated applicant data
+            await db.collection('applicants').doc(user.uid).update({
+                applicants: arrayUnion(updatedApplicant)
+            });
 
-          // Update the local state
-          setApplicants(prevApplicants => {
-              const newApplicants = [...prevApplicants];
-              newApplicants[index] = updatedApplicant;
-              return newApplicants;
-          });
+            // Update the local state
+            setApplicants(prevApplicants => {
+                const newApplicants = [...prevApplicants];
+                newApplicants[index] = updatedApplicant;
+                return newApplicants;
+            });
 
-          // If the new status is "Shortlisted," add to L1_Candidates collection
-          if (newStatus === "Shortlisted") {
-              await db.collection('L1_Candidates').doc(user.uid).set({
-                  applicants: arrayUnion({
-                      ...updatedApplicant,
-                      L1Status: 'L1 Interview Scheduled',
-                      createdAt: new Date(),
-                  })
-              }, { merge: true });
-              console.log(`Applicant at index ${index} added to L1_Candidates with status "Shortlisted"`);
-          }
+            // If the new status is "Shortlisted," add to L1_Candidates collection
+            if (newStatus === "Shortlisted") {
+                await db.collection('L1_Candidates').doc(user.uid).set({
+                    applicants: arrayUnion({
+                        ...updatedApplicant,
+                        L1Status: 'Scheduled',
+                        createdAt: new Date(),
+                    })
+                }, { merge: true });
+                console.log(`Applicant at index ${index} added to L1_Candidates with status "Shortlisted"`);
+            }
 
-          console.log(`Applicant at index ${index} status updated to ${newStatus}`);
-      } catch (error) {
-          console.error("Error updating status: ", error);
-      }
-  };
+            console.log(`Applicant at index ${index} status updated to ${newStatus}`);
+        } catch (error) {
+            console.error("Error updating status: ", error);
+        }
+    };
 
-  const handleAddProfileClick = () => {
-      navigate('/e-applicant');
-  };
+    const handleAddProfileClick = () => {
+        navigate('/e-applicant');
+    };
 
+    // Fetch positions from Firestore
+    const fetchPositions = async () => {
+        try {
+            const positionsSnapshot = await db.collection('positionsrequired').get();
+            const fetchedPositions = positionsSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setPositions(fetchedPositions);
+        } catch (error) {
+            console.error("Error fetching positions:", error);
+        }
+    };
 
+    useEffect(() => {
+        fetchPositions(); // Fetch positions when the component mounts
+    }, []);
 
     return (
         <div className='e-screening-container'>
@@ -97,9 +115,25 @@ const EmployeeScreening = () => {
             <div className={`e-screening-content ${collapsed ? 'collapsed' : ''}`}>
                 <div className="header-container">
                     <h2>Applicants Details</h2>
-                    <button className="add-profile-button" onClick={handleAddProfileClick}>
-                        + Add Profile
-                    </button>
+                    <div className="header-actions">
+                         {/* Position Dropdown */}
+                         <select
+                            value={selectedPosition}
+                            onChange={(e) => setSelectedPosition(e.target.value)}
+                            className="position-dropdown"
+                        >
+                            <option value="">Select Position</option>
+                            {positions.map(position => (
+                                <option key={position.id} value={position.positionName}>
+                                    {position.positionName}
+                                </option>
+                            ))}
+                        </select>
+                        <button className="add-profile-button" onClick={handleAddProfileClick}>
+                            + Add Profile
+                        </button>
+                       
+                    </div>
                 </div>
                 <div className='table-responsive'>
                     <table className="styled-table">
@@ -127,7 +161,7 @@ const EmployeeScreening = () => {
                             </tr>
                         </thead>
                         <tbody>
-                        {applicants.map((applicant, index) => (
+                            {applicants.map((applicant, index) => (
                                 <tr key={index}>
                                     <td>{applicant.name}</td>
                                     <td>{applicant.email}</td>

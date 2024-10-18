@@ -1,25 +1,25 @@
 .e-screening-container {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .e-screening-content {
-    margin-top: 60px; /* Adjust based on header height */
-    margin-left: 220px; /* Adjust based on sidebar width */
-    padding: 20px;
-    width: calc(100% - 220px); /* Adjust width based on sidebar width */
-    transition: margin-left 0.3s ease, width 0.3s ease;
-  }
-  
-  .e-screening-content.collapsed {
-    margin-left: 50px; /* Adjust based on collapsed sidebar width */
-    width: calc(100% - 50px); /* Adjust width based on collapsed sidebar width */
-  }
+  display: flex;
+  flex-direction: row;
+}
 
-  .view-resume-link {
-    color: #007bff; /* Bootstrap primary color */
-    text-decoration: none; /* Remove underline */
-    font-weight: bold; /* Bold text */
+.e-screening-content {
+  margin-top: 60px; /* Adjust based on header height */
+  margin-left: 220px; /* Adjust based on sidebar width */
+  padding: 20px;
+  width: calc(100% - 220px); /* Adjust width based on sidebar width */
+  transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.e-screening-content.collapsed {
+  margin-left: 50px; /* Adjust based on collapsed sidebar width */
+  width: calc(100% - 50px); /* Adjust width based on collapsed sidebar width */
+}
+
+.view-resume-link {
+  color: #007bff; /* Bootstrap primary color */
+  text-decoration: none; /* Remove underline */
+  font-weight: bold; /* Bold text */
 }
 
 .one-line {
@@ -30,11 +30,9 @@
   display: flex;
   align-items: center; /* Aligns items vertically in the center */
   justify-content: space-between; /* Adds space between elements */
-  
 }
 
 .add-profile-button {
-  
   padding: 10px 15px;
   background-color: #007bff; /* Adjust to your desired color */
   color: white;
@@ -47,21 +45,44 @@
   background-color: #0056b3; /* Darker shade for hover effect */
 }
 
+/* Styles for header-actions */
+.header-actions {
+  display: flex;
+  align-items: center; /* Align dropdown and button vertically */
+  gap: 10px; /* Space between dropdown and button */
+  margin-top: 10px;
+}
 
-  /* Responsive Design */
-  @media (max-width: 767px) {
-    .e-screening-container {
-      flex-direction: column;
-    }
-  
-    .e-screening-content {
-      margin-left: 0;
-      width: 100%;
-    }
-  
-    .e-screening-content.collapsed {
-      margin-left: 0;
-      width: 100%;
-    }
+.position-dropdown {
+  padding: 10px;
+  border: 1px solid #ccc; /* Light border around dropdown */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 767px) {
+  .e-screening-container {
+    flex-direction: column;
   }
-  
+
+  .e-screening-content {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .e-screening-content.collapsed {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .header-actions {
+    flex-direction: column; /* Stack dropdown and button on smaller screens */
+    align-items: stretch;
+  }
+
+  .position-dropdown, .add-profile-button {
+    width: 100%; /* Full width for both elements on smaller screens */
+  }
+}
