@@ -102,7 +102,12 @@ const AdminDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
-            
+            <li className={`nav-item ${location.pathname === '/productivity-all-tracker'? 'active' : ''}`}>
+              <Link className="nav-link" to="/productivity-all-tracker" onClick={handleNavItemClick}>
+                <FaUserPlus    className="nav-icon" />
+                {!collapsed && <span className="link_text">Productivity Tracker</span>}
+              </Link>
+            </li>
             
 
             
