@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { Form, Button, Col, Row, Card } from 'react-bootstrap';
@@ -30,8 +31,27 @@ const EmployeeApplicants = () => {
     resume: null,
     source: '',
   });
+  const [positions, setPositions] = useState([]); // To store positions from Firestore
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate(); // Initialize useNavigate
+
+  // Fetch positions from Firestore
+  const fetchPositions = async () => {
+    try {
+      const positionsSnapshot = await db.collection('positionsrequired').get();
+      const fetchedPositions = positionsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setPositions(fetchedPositions);
+    } catch (error) {
+      console.error("Error fetching positions:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPositions(); // Fetch positions when the component mounts
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -97,7 +117,6 @@ const EmployeeApplicants = () => {
       }
   
       alert('Application submitted successfully!');
-      // navigate('/e-screening');
     } catch (error) {
       console.error('Error uploading resume or saving data:', error);
       alert('Error submitting application. Please try again.');
@@ -105,11 +124,10 @@ const EmployeeApplicants = () => {
       setLoading(false);
     }
   };
-  
 
   const handlebackclick = () => {
     navigate('/e-screening'); // Change this path to your actual route for adding clients
-};
+  };
 
   return (
     <div className='e-applicant-container'>
@@ -194,7 +212,18 @@ const EmployeeApplicants = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>Position Interested For</Form.Label>
-                    <Form.Control type="text" name="positionInterested" value={formData.positionInterested} onChange={handleChange} />
+                    <Form.Select
+                      name="positionInterested"
+                      value={formData.positionInterested}
+                      onChange={handleChange}
+                    >
+                      <option value="" disabled>Select Position</option>
+                      {positions.map(position => (
+                        <option key={position.id} value={position.positionName}>
+                          {position.positionName}
+                        </option>
+                      ))}
+                    </Form.Select>
                   </Form.Group>
                 </Col>
                 <Col md={6}>
