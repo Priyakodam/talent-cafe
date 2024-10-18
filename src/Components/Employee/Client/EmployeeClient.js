@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from 'react-router-dom';
-import "./EmployeeClient.css";
 import { Card, Form, Row, Col, Button } from 'react-bootstrap';
 import { db } from "../../Firebase/FirebaseConfig";
-import { collection, addDoc} from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 
 const EmployeeClient = () => {
     const { user } = useAuth();
@@ -18,27 +17,44 @@ const EmployeeClient = () => {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('Active');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(''); // For error display
 
-    const clientsCollectionRef = collection(db, 'clients'); // Reference to the collection
+    const clientsCollectionRef = collection(db, 'clients');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setErrorMessage(''); // Clear any previous errors
 
-        // Create a new client object
-        const newClient = {
-            companyName,
-            contactPerson,
-            designation,
-            mobile,
-            email,
-            status,
-            employeeUid:user.uid,
-            timestamp: new Date(),
-        };
+        // Create a normalized version of the company name
+        const companyNameNormalized = companyName.toLowerCase();
 
         try {
-            // Add the new client to the collection
+            // Check if the normalized company name already exists (case-insensitive check)
+            const q = query(clientsCollectionRef, where("companyNameNormalized", "==", companyNameNormalized));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                // Client with the same company name exists
+                setErrorMessage("Client details already exist");
+                setIsSubmitting(false); // Stop submission
+                return;
+            }
+
+            // If no duplicate is found, proceed with adding the client
+            const newClient = {
+                companyName, // Store original case
+                companyNameNormalized, // Store lowercase for future comparisons
+                contactPerson,
+                designation,
+                mobile,
+                email,
+                status,
+                employeeName: user.name,
+                employeeUid: user.uid,
+                timestamp: new Date(),
+            };
+
             await addDoc(clientsCollectionRef, newClient);
             console.log('Client added successfully');
             alert('Client added successfully!');
@@ -55,12 +71,12 @@ const EmployeeClient = () => {
             console.error('Error storing client data:', error);
             alert('Error storing client data. Please try again.');
         } finally {
-            setIsSubmitting(false); // End submission
+            setIsSubmitting(false);
         }
     };
 
     const handlebackclick = () => {
-        navigate('/e-view-clients'); // Change this path to your actual route for adding clients
+        navigate('/e-view-clients');
     };
 
     return (
@@ -74,6 +90,8 @@ const EmployeeClient = () => {
                         </Card.Header>
                         <Card.Body>
                             <Form onSubmit={handleSubmit}>
+                                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Error message display */}
+                                
                                 <Row className="mb-3">
                                     <Col md={6}>
                                         <Form.Group controlId="companyName">
@@ -160,7 +178,7 @@ const EmployeeClient = () => {
                                 </Row>
 
                                 <div>
-                                <Button onClick={handlebackclick} variant="btn btn-secondary">
+                                    <Button onClick={handlebackclick} variant="btn btn-secondary">
                                        Back
                                     </Button>
                                     &nbsp;
