@@ -74,7 +74,7 @@ const EmployeeScreening = () => {
                 await db.collection('L1_Candidates').doc(user.uid).set({
                     applicants: arrayUnion({
                         ...updatedApplicant,
-                        L1Status: 'L1 Interview Scheduled',
+                        L1Status: 'Scheduled',
                         createdAt: new Date(),
                     })
                 }, { merge: true });

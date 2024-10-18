@@ -19,6 +19,7 @@ import EmployeeApplicant from "./Components/Employee/Applicants/EmployeeApplican
 import EmployeeViewClients from "./Components/Employee/Client/EmployeeViewClients";
 import EmpL1Candidates from './Components/Employee/Screening/EmpL1Candidates';
 import EmpL2Candidates from './Components/Employee/Screening/EmpL2Candidates';
+import EmpF2FCandidates from './Components/Employee/Screening/EmpF2FCandidates';
 import ViewOPenPositions from "./Components/Employee/OpenPositions/ViewOpenPositions"
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ function App() {
       <Route path="/e-applicant" element={<EmployeeApplicant/>} />
       <Route path="/e-L1candidates" element={<EmpL1Candidates/>} />
       <Route path="/e-L2candidates" element={<EmpL2Candidates/>} />
+      <Route path="/e-F2Fcandidates" element={<EmpF2FCandidates/>} />
       <Route path="/e-viewopenpositions" element={<ViewOPenPositions/>} />
       </Routes>
     </BrowserRouter>
