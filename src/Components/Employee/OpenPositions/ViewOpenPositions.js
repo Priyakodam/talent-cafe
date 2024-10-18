@@ -53,10 +53,11 @@ const PositionList = () => {
         <table className="table table-striped table-bordered">
           <thead>
             <tr>
-              <th>#</th>
+              <th>S.no</th>
               <th>Position Title</th>
               <th>Position From</th>
               <th>Budget</th>
+              <th>Number OF Position</th>
               <th>Experience (years)</th>
               <th>Status</th>
               <th>Created At</th>
@@ -70,6 +71,7 @@ const PositionList = () => {
                   <td>{position.positionTitle}</td>
                   <td>{position.positionFrom}</td>
                   <td>{position.budget}</td>
+                  <td>{position.numOfOpenPositions}</td>
                   <td>{position.experience}</td>
                   <td>{position.status}</td>
                   <td>{new Date(position.createdAt.seconds * 1000).toLocaleDateString()}</td>

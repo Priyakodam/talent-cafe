@@ -12,7 +12,8 @@ const OpenPositions = () => {
   const [positionTitle, setPositionTitle] = useState('');
   const [positionFrom, setPositionFrom] = useState('');
   const [budget, setBudget] = useState('');
-  const [experience, setExperience] = useState('');
+  const [experience, setExperience] = useState(""); // Set default value for range
+  const [numOfOpenPositions, setNumOfOpenPositions] = useState(''); // New field for number of positions
   const [status, setStatus] = useState('active');
   const [positions, setPositions] = useState([]); // For the positions dropdown
   const [showModal, setShowModal] = useState(false); // Modal state
@@ -40,6 +41,7 @@ const OpenPositions = () => {
         positionFrom,
         budget,
         experience,
+        numOfOpenPositions, // Save the new field in Firestore
         status,
         createdBy: user.uid,
         createdAt: new Date(),
@@ -49,7 +51,8 @@ const OpenPositions = () => {
       setPositionTitle('');
       setPositionFrom('');
       setBudget('');
-      setExperience('');
+      setExperience(1); // Reset experience range input
+      setNumOfOpenPositions(''); // Reset new field
       setStatus('active');
     } catch (error) {
       console.error("Error adding position:", error);
@@ -134,6 +137,19 @@ const OpenPositions = () => {
           </div>
 
           <div className="row">
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Number of Open Positions:</label> {/* New input field */}
+                <input
+                  type="number"
+                  className="form-control"
+                  value={numOfOpenPositions}
+                  onChange={(e) => setNumOfOpenPositions(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
             <div className="col-md-6">
               <div className="form-group">
                 <label>Status:</label>
