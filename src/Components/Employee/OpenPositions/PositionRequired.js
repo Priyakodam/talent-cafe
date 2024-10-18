@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
-import { db } from './../../Firebase/FirebaseConfig'; // Ensure your Firebase config is correctly imported
+import { db } from './../../Firebase/FirebaseConfig'; 
 
 const AddPositionModal = ({ show, handleClose, fetchPositions }) => {
   const [positionName, setPositionName] = useState('');
@@ -9,14 +9,14 @@ const AddPositionModal = ({ show, handleClose, fetchPositions }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await db.collection('positionsrequired').add({ // Store in 'positions' collection
+      await db.collection('positionsrequired').add({
         positionName,
         description,
         createdAt: new Date(),
       });
       console.log("Position added successfully");
-      fetchPositions(); // Fetch updated positions after adding
-      handleClose(); // Close the modal
+      fetchPositions(); // Fetch updated positions
+      handleClose(); // Close the modal after success
     } catch (error) {
       console.error("Error adding position:", error);
     }
