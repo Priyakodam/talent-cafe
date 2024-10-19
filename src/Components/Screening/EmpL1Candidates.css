@@ -1,0 +1,39 @@
+.a-L1Candidates-container {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .a-L1Candidates-content {
+    margin-top: 60px; /* Adjust based on header height */
+    margin-left: 220px; /* Adjust based on sidebar width */
+    padding: 20px;
+    width: calc(100% - 220px); /* Adjust width based on sidebar width */
+    transition: margin-left 0.3s ease, width 0.3s ease;
+  }
+  
+  .a-L1Candidates-content.collapsed {
+    margin-left: 50px; /* Adjust based on collapsed sidebar width */
+    width: calc(100% - 50px); /* Adjust width based on collapsed sidebar width */
+  }
+
+    
+
+  
+  
+  /* Responsive Design */
+  @media (max-width: 767px) {
+    .a-L1Candidates-container {
+      flex-direction: column;
+    }
+  
+    .a-L1Candidates-content {
+      margin-left: 0;
+      width: 100%;
+    }
+  
+    .a-L1Candidates-content.collapsed {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+  
