@@ -18,7 +18,7 @@ const PositionList = () => {
     const fetchPositions = async () => {
       try {
         const snapshot = await db.collection('position')
-          .where('createdBy', '==', user.uid)
+         
           .orderBy('createdAt', 'desc')
           .get();
           
