@@ -94,19 +94,20 @@ const OpenPositions = () => {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
-                                <th>DOB</th>
+                                {/* <th>DOB</th> */}
                                 <th>Gender</th>
                                 <th>Educational Qualification</th>
                                 <th>Year of Passing</th>
                                 <th>Years of Experience</th>
-                                <th>Address</th>
-                                <th>City</th>
+                                {/* <th>Address</th>
+                                <th>City</th> */}
                                 <th>Current/Last Company</th>
                                 <th>Position Interested</th>
+                                <th>Company</th>
                                 <th>Designation</th>
-                                <th>Preferred Area</th>
+                                {/* <th>Preferred Area</th> */}
                                 <th>Skills</th>
-                                <th>Source</th>
+                                {/* <th>Source</th> */}
                                 <th>Resume</th>
                                 {/* <th>Status</th> */}
                                 <th>F2FStatus</th>
@@ -119,19 +120,20 @@ const OpenPositions = () => {
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.mobile}</td>
-                                    <td className="one-line">{candidate.dateOfBirth}</td>
+                                    {/* <td className="one-line">{candidate.dateOfBirth}</td> */}
                                     <td>{candidate.gender}</td>
                                     <td>{candidate.educationalQualification}</td>
                                     <td>{candidate.yearOfPassing}</td>
                                     <td>{candidate.yearsOfExperience}</td>
-                                    <td>{candidate.address}</td>
-                                    <td>{candidate.city}</td>
+                                    {/* <td>{candidate.address}</td>
+                                    <td>{candidate.city}</td> */}
                                     <td>{candidate.currentCompany}</td>
                                     <td>{candidate.positionInterested}</td>
+                                    <td>{candidate.company}</td>
                                     <td>{candidate.designation}</td>
-                                    <td>{candidate.preferredArea}</td>  
+                                    {/* <td>{candidate.preferredArea}</td>   */}
                                     <td>{candidate.skills}</td>
-                                    <td>{candidate.source}</td>                              
+                                    {/* <td>{candidate.source}</td>                               */}
                                     <td> 
                                         <a 
                                             href={candidate.resume} 

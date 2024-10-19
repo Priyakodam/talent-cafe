@@ -3,6 +3,10 @@ import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { db } from '../../Firebase/FirebaseConfig'; // Make sure to import your Firestore config
 import "./EmpL2Candidates.css";
+import { arrayUnion, arrayRemove } from 'firebase/firestore';
+import { FaTimes } from 'react-icons/fa';
+import axios from 'axios';
+import { Modal, Button, Form } from 'react-bootstrap';
 
 const OpenPositions = () => {
     const { user } = useAuth();
@@ -10,6 +14,18 @@ const OpenPositions = () => {
     const [l2Candidates, setL2Candidates] = useState([]);
     const [positions, setPositions] = useState([]);
     const [selectedPosition, setSelectedPosition] = useState('');
+    const [selectedPositionFrom, setSelectedPositionFrom] = useState('');
+    const [filteredPositions, setFilteredPositions] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedApplicant, setSelectedApplicant] = useState(null);
+    const [interviewDetails, setInterviewDetails] = useState({
+        date: '',
+        time: '',
+        interviewLink: '',
+        clientFeedback: '',
+        venue: '' // Add venue here
+    });
+    
 
     useEffect(() => {
         const fetchL2Candidates = async () => {
@@ -40,20 +56,44 @@ const OpenPositions = () => {
     // Fetch positions from Firestore
     const fetchPositions = async () => {
         try {
-            const positionsSnapshot = await db.collection('positionsrequired').get();
+            const positionsSnapshot = await db.collection('position')
+                .where('createdBy', '==', user.uid) 
+                .get();
+
             const fetchedPositions = positionsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
             setPositions(fetchedPositions);
+
+            const uniquePositionFrom = [...new Set(fetchedPositions.map(pos => pos.positionFrom))];
+            setFilteredPositions(uniquePositionFrom);
         } catch (error) {
             console.error("Error fetching positions:", error);
         }
     };
 
     useEffect(() => {
-        fetchPositions(); // Fetch positions when the component mounts
+        fetchPositions();
     }, []);
+
+    const handlePositionFromChange = (event) => {
+        const selected = event.target.value;
+        setSelectedPositionFrom(selected);
+    };
+
+    const handleClearSelection = () => {
+        setSelectedPositionFrom('');
+        setSelectedPosition('');
+    };
+
+    const relevantPositions = positions.filter(position => position.positionFrom === selectedPositionFrom);
+
+    const filteredApplicants = l2Candidates.filter(candidate =>
+        (!selectedPositionFrom || candidate.company === selectedPositionFrom) && // Match company
+        (!selectedPosition || candidate.positionInterested === selectedPosition) // Match position title
+    );
 
     const handleStatusChange = async (e, candidate) => {
         const updatedL2Status = e.target.value;
@@ -105,6 +145,73 @@ const OpenPositions = () => {
             }
         }
     };
+
+    const handleSendEmailClick = (candidate) => {
+        setSelectedApplicant(candidate); // Store selected applicant
+        setShowModal(true); // Show the modal
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+        setInterviewDetails({
+            date: '',
+            time: '',
+            interviewLink: '',
+            clientFeedback: ''
+        });
+    };
+
+    const handleModalSubmit = async () => {
+        const { date, time, interviewLink, clientFeedback, venue } = interviewDetails;
+    if (!date || !time || !interviewLink || !clientFeedback || !venue) {
+        alert("Please fill all fields before sending the email.");
+        return;
+    }
+    
+        const emailPayload = {
+            to_email: [selectedApplicant.email],
+            subject: "Interview Scheduling",
+            message: `
+                <p>Dear ${selectedApplicant.name},</p>
+                <p>Your F2F interview has been scheduled for the company ${selectedApplicant.company}</p>
+                <p><strong>Date:</strong> ${date}</p>
+                <p><strong>Time:</strong> ${time}</p>
+                <p><strong>Venue:</strong> ${interviewDetails.venue}</p>
+                
+                <p><strong>Client Feedback:</strong> ${clientFeedback}</p>
+            `
+        };
+        
+    
+        try {
+            // Send the email via API
+            await axios.post('https://saikrishnaapi.vercel.app/send-email', emailPayload);
+    
+            // Update the `emailSent` field in the same applicant array
+            const updatedApplicant = { ...selectedApplicant, emailSent: true, F2FStatus: 'Scheduled', createdAt: new Date() };
+    
+            await db.collection('L2_Candidates').doc(user.uid).update({
+                L2_candidates: arrayRemove(selectedApplicant) // Remove the old applicant data
+            });
+    
+            await db.collection('L2_Candidates').doc(user.uid).update({
+                L2_candidates: arrayUnion(updatedApplicant) // Add the updated applicant with the emailSent flag
+            });
+    
+            // Update the local state
+            setL2Candidates(prevApplicants => {
+                return prevApplicants.map(applicant =>
+                    applicant.email === selectedApplicant.email ? { ...applicant, emailSent: true } : applicant
+                );
+            });
+    
+            alert('Email sent successfully!');
+            handleModalClose(); // Close the modal
+        } catch (error) {
+            console.error("Error sending email or updating Firestore:", error);
+            alert('Failed to send email.');
+        }
+    };
     
     
 
@@ -118,17 +225,40 @@ const OpenPositions = () => {
                     <div className="header-actions">
                         {/* Position Dropdown */}
                         <select
-                            value={selectedPosition}
-                            onChange={(e) => setSelectedPosition(e.target.value)}
+                            value={selectedPositionFrom}
+                            onChange={handlePositionFromChange}
                             className="position-dropdown"
                         >
-                            <option value="">Select Position</option>
-                            {positions.map(position => (
-                                <option key={position.id} value={position.positionName}>
-                                    {position.positionName}
+                            <option value="" disabled>Select Company</option>
+                            {filteredPositions.map((positionFrom, index) => (
+                                <option key={index} value={positionFrom}>
+                                    {positionFrom}
                                 </option>
                             ))}
                         </select>
+
+                        {/* Position Dropdown */}
+                        <select
+                            value={selectedPosition}
+                            onChange={(e) => setSelectedPosition(e.target.value)}
+                            className="position-dropdown"
+                            disabled={!selectedPositionFrom} // Disable if no PositionFrom is selected
+                        >
+                            <option value="" disabled>Select Position</option>
+                            {relevantPositions.map(position => (
+                                <option key={position.id} value={position.positionTitle}>
+                                    {position.positionTitle}
+                                </option>
+                            ))}
+                        </select>
+
+                        {selectedPositionFrom && (
+                            <FaTimes
+                                className="clear-selection-icon"
+                                onClick={handleClearSelection}
+                                style={{ cursor: 'pointer',  color:'red' }}
+                            />
+                        )}
                     </div>
                 </div>
                 
@@ -139,19 +269,20 @@ const OpenPositions = () => {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
-                                <th>DOB</th>
+                                {/* <th>DOB</th> */}
                                 <th>Gender</th>
                                 <th>Educational Qualification</th>
                                 <th>Year of Passing</th>
                                 <th>Years of Experience</th>
-                                <th>Address</th>
-                                <th>City</th>
+                                {/* <th>Address</th>
+                                <th>City</th> */}
                                 <th>Current/Last Company</th>
                                 <th>Position Interested</th>
+                                <th>Company</th>
                                 <th>Designation</th>
-                                <th>Preferred Area</th>
+                                {/* <th>Preferred Area</th> */}
                                 <th>Skills</th>
-                                <th>Source</th>
+                                {/* <th>Source</th> */}
                                 <th>Resume</th>
                                 {/* <th>Status</th> */}
                                 <th>L2Status</th>
@@ -159,24 +290,25 @@ const OpenPositions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {l2Candidates.map(candidate => (
+                            {filteredApplicants.map(candidate => (
                                 <tr key={candidate.id}>
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.mobile}</td>
-                                    <td className="one-line">{candidate.dateOfBirth}</td>
+                                    {/* <td className="one-line">{candidate.dateOfBirth}</td> */}
                                     <td>{candidate.gender}</td>
                                     <td>{candidate.educationalQualification}</td>
                                     <td>{candidate.yearOfPassing}</td>
                                     <td>{candidate.yearsOfExperience}</td>
-                                    <td>{candidate.address}</td>
-                                    <td>{candidate.city}</td>
+                                    {/* <td>{candidate.address}</td>
+                                    <td>{candidate.city}</td> */}
                                     <td>{candidate.currentCompany}</td>
                                     <td>{candidate.positionInterested}</td>
+                                    <td>{candidate.company}</td>
                                     <td>{candidate.designation}</td>
-                                    <td>{candidate.preferredArea}</td>  
+                                    {/* <td>{candidate.preferredArea}</td>   */}
                                     <td>{candidate.skills}</td>
-                                    <td>{candidate.source}</td>                              
+                                    {/* <td>{candidate.source}</td>                               */}
                                     <td> 
                                         <a 
                                             href={candidate.resume} 
@@ -193,18 +325,97 @@ const OpenPositions = () => {
                                         <select 
                                             value={candidate.L2Status} 
                                             onChange={(e) => handleStatusChange(e, candidate)}
-                                            disabled={candidate.L2Status === 'Shortlisted'}
+                                            disabled={candidate.L2Status === 'Shortlisted' || candidate.L2Status === 'Rejected'}
                                         >
                                             <option value="">Select Action</option>
                                             <option value="Shortlisted">Shortlist</option>
                                             <option value="Rejected">Reject</option>
                                         </select>
+                                        {candidate.L2Status === "Shortlisted" && !candidate.emailSent && (
+    <button 
+        className="send-email-button"
+        onClick={() => handleSendEmailClick(candidate)}
+    >
+        Send Email
+    </button>
+)}
+{candidate.emailSent && (
+    <button className="send-email-button" disabled>
+        Email Sent
+    </button>
+)}
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                <Modal show={showModal} onHide={handleModalClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Schedule Interview</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group controlId="formDate">
+                                <Form.Label>Interview Date</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    value={interviewDetails.date}
+                                    onChange={(e) => setInterviewDetails({ ...interviewDetails, date: e.target.value })}
+                                />
+                            </Form.Group>
+
+                            <Form.Group controlId="formTime">
+                                <Form.Label>Interview Time</Form.Label>
+                                <Form.Control
+                                    type="time"
+                                    value={interviewDetails.time}
+                                    onChange={(e) => setInterviewDetails({ ...interviewDetails, time: e.target.value })}
+                                />
+                            </Form.Group>
+
+                            {/* <Form.Group controlId="formLink">
+                                <Form.Label>Interview Link</Form.Label>
+                                <Form.Control
+                                    type="url"
+                                    placeholder="Enter interview link"
+                                    value={interviewDetails.interviewLink}
+                                    onChange={(e) => setInterviewDetails({ ...interviewDetails, interviewLink: e.target.value })}
+                                />
+                            </Form.Group> */}
+
+                            <Form.Group controlId="formVenue">
+    <Form.Label>Interview Venue</Form.Label>
+    <Form.Control
+        type="text"
+        placeholder="Enter interview venue"
+        value={interviewDetails.venue}
+        onChange={(e) => setInterviewDetails({ ...interviewDetails, venue: e.target.value })}
+    />
+</Form.Group>
+
+
+                            <Form.Group controlId="formFeedback">
+                                <Form.Label>Client Feedback</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    placeholder="Enter feedback"
+                                    value={interviewDetails.clientFeedback}
+                                    onChange={(e) => setInterviewDetails({ ...interviewDetails, clientFeedback: e.target.value })}
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleModalClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={handleModalSubmit}>
+                            Send Email
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </div>
     );
