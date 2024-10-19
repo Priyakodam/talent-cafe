@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "bkartstasktracker",
+    "staging": "talentcafe-solutions"
+  },
+  "targets": {},
+  "etags": {}
+}
