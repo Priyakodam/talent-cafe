@@ -118,6 +118,19 @@ const EmployeeDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
             
+            <li className={`nav-item ${location.pathname === '/productivity-tracker' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/productivity-tracker" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">Productivity Tracker</span>}
+              </Link>
+            </li>
+    
+            <li className={`nav-item ${location.pathname === '/manage-productivity-tracker' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/manage-productivity-tracker" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">Manage Productivity Tracker</span>}
+              </Link>
+            </li>
 
            
 

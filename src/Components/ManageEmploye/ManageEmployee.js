@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { db, auth } from '../Firebase/FirebaseConfig'; // Import Firestore and Authentication
+import { db, auth } from '../Firebase/FirebaseConfig'; 
 import Dashboard from '../Dashboard/Dashboard';
-import './ManageEmployee.css'; // Import CSS for this component
-import { FaEdit, FaTrash } from 'react-icons/fa'; // Import icons for action buttons
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import './ManageEmployee.css'; 
+import { FaEdit, FaTrash } from 'react-icons/fa'; 
+import { useNavigate } from 'react-router-dom'; 
 
-const ManageEmploye = () => {
+const ManageEmployee = () => {
   const [employees, setEmployees] = useState([]);
-  const [collapsed, setCollapsed] = useState(false); // Define collapsed state
-  const [editEmployee, setEditEmployee] = useState(null); // Store employee being edited
+  const [collapsed, setCollapsed] = useState(false); 
+  const [editEmployee, setEditEmployee] = useState(null); 
   const [formValues, setFormValues] = useState({
     name: '',
     mobile: '',
     email: '',
     designation: '',
     password: '',
-    dateOfJoining: null
+    dateOfJoining: ''
   });
 
   const navigate = useNavigate(); // Initialize the navigate hook
@@ -29,11 +29,13 @@ const ManageEmploye = () => {
           id: doc.id,
           slNo: index + 1, // Serial number based on index
           ...doc.data(),
+          dateOfJoining: doc.data().dateOfJoining ? doc.data().dateOfJoining.toDate() : null, // Convert Firestore Timestamp to Date
+          createdAt: doc.data().createdAt ? doc.data().createdAt.toDate() : null // Convert Firestore Timestamp to Date
         }));
 
         // Sort employees by dateOfJoining in descending order (most recent first)
         const sortedEmployees = employeeList.sort(
-          (a, b) => b.dateOfJoining.seconds - a.dateOfJoining.seconds
+          (a, b) => b.dateOfJoining - a.dateOfJoining
         );
 
         setEmployees(sortedEmployees); // Store the sorted data in state
@@ -77,7 +79,7 @@ const ManageEmploye = () => {
       email: employee.email,
       designation: employee.designation,
       password: employee.password,
-      dateOfJoining: new Date(employee.dateOfJoining.seconds * 1000),
+      dateOfJoining: employee.dateOfJoining ? employee.dateOfJoining.toISOString().split('T')[0] : ''
     });
   };
 
@@ -103,7 +105,7 @@ const ManageEmploye = () => {
         email: formValues.email,
         designation: formValues.designation,
         password: formValues.password,
-        dateOfJoining: formValues.dateOfJoining,
+        dateOfJoining: new Date(formValues.dateOfJoining),
       });
 
       // If email is changed, update in Firebase Authentication
@@ -122,7 +124,7 @@ const ManageEmploye = () => {
         email: '',
         designation: '',
         password: '',
-        dateOfJoining: null
+        dateOfJoining: ''
       });
 
       alert('Employee updated successfully.');
@@ -133,7 +135,8 @@ const ManageEmploye = () => {
 
   // Helper function to format the date in dd-mm-yyyy format
   const formatDate = (dateObj) => {
-    const date = new Date(dateObj.seconds * 1000);
+    if (!dateObj) return '';
+    const date = new Date(dateObj);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JS
     const year = date.getFullYear();
@@ -229,7 +232,7 @@ const ManageEmploye = () => {
                 <input
                   type="date"
                   name="dateOfJoining"
-                  value={formValues.dateOfJoining ? formValues.dateOfJoining.toISOString().split("T")[0] : ""}
+                  value={formValues.dateOfJoining}
                   onChange={handleChange}
                   required
                 />
@@ -297,4 +300,4 @@ const ManageEmploye = () => {
   );
 };
 
-export default ManageEmploye;
+export default ManageEmployee;

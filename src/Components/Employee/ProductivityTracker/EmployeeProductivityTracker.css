@@ -1,0 +1,60 @@
+.employee-productivity-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+  
+  }
+
+  .input-width{
+    width:209%;
+    margin-bottom:10px;
+  }
+  
+  .employee-productivity-card {
+    width: 60%; /* Set a fixed width for the form card */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for depth */
+    padding: 30px;
+    margin-top: 40%;
+    margin-left: 160px;
+  }
+  
+  .employee-productivity-card-header {
+    margin-bottom: 20px;
+  }
+  
+  .employee-productivity-card-header h3 {
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .employee-productivity-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .employee-productivity-form .form-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .employee-productivity-form .form-group {
+    width: 48%; /* Set width of form fields to align next to each other */
+  }
+  
+  .employee-productivity-submit-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #349adb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .employee-productivity-submit-btn:hover {
+    background-color: #2677bd; /* Change color on hover */
+  }
+  

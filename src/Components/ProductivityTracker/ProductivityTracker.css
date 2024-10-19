@@ -1,0 +1,41 @@
+.productivity-tracker-container {
+    margin: 0 auto;
+    max-width: 1200px; /* Set a max-width for the table */
+    margin-top:20%;
+  }
+  
+  .productivity-tracker-card {
+    border-radius: 10px;
+    margin-top: 10%;
+    margin-left: 8%;
+    width: 1200px;
+  }
+  
+  .productivity-tracker-card-header {
+   
+    color: black;
+    font-weight: bold;
+  }
+  
+  .productivity-tracker-card-body {
+    padding: 20px;
+  }
+  
+  .productivity-tracker-table {
+    font-size: 14px;
+  }
+  
+  .productivity-tracker-thead th {
+    font-weight: bold;
+    background-color: #8894ac; /* Dark header background */
+    color: #fff; /* White text */
+  }
+  
+  .table-striped tbody .productivity-tracker-row:nth-of-type(odd) {
+    background-color: #f2f2f2; /* Light gray for striped effect */
+  }
+  
+  .table-hover tbody .productivity-tracker-row:hover {
+    background-color: #e0e0e0; /* Slight hover effect */
+  }
+  

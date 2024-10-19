@@ -1,32 +1,72 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { db } from './../../Firebase/FirebaseConfig';
-import { addDoc, collection } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { useAuth } from "../../Context/AuthContext";
 
 const AddCompanyModal = ({ show, handleClose, fetchCompanies }) => {
+  const { user } = useAuth();
   const [companyName, setCompanyName] = useState('');
   const [contactPerson, setContactPerson] = useState('');
   const [designation, setDesignation] = useState('');
   const [mobile, setMobile] = useState('');
   const [email, setEmail] = useState('');
+  const [status, setStatus] = useState('Active');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(''); // For error display
+    const clientsCollectionRef = collection(db, 'clients');
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setIsSubmitting(true);
+      setErrorMessage(''); // Clear any previous errors
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, 'clients'), {
-        companyName,
-        contactPerson,
-        designation,
-        mobile,
-        email,
-        status: 'Active',
-        timestamp: new Date(),
-      });
-      fetchCompanies(); // Refresh companies in parent component
-      handleClose(); // Close modal after submission
-    } catch (error) {
-      console.error('Error adding company:', error);
-    }
+      // Create a normalized version of the company name
+      const companyNameNormalized = companyName.toLowerCase();
+
+      try {
+          // Check if the normalized company name already exists (case-insensitive check)
+          const q = query(clientsCollectionRef, where("companyNameNormalized", "==", companyNameNormalized));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+              // Client with the same company name exists
+              setErrorMessage("Client details already exist");
+              setIsSubmitting(false); // Stop submission
+              return;
+          }
+
+          // If no duplicate is found, proceed with adding the client
+          const newClient = {
+              companyName, // Store original case
+              companyNameNormalized, // Store lowercase for future comparisons
+              contactPerson,
+              designation,
+              mobile,
+              email,
+              status,
+              employeeName: user.name,
+              employeeUid: user.uid,
+              timestamp: new Date(),
+          };
+
+          await addDoc(clientsCollectionRef, newClient);
+          console.log('Client added successfully');
+          alert('Client added successfully!');
+
+          // Reset form fields
+          setCompanyName('');
+          setContactPerson('');
+          setDesignation('');
+          setMobile('');
+          setEmail('');
+          setStatus('Active');
+
+      } catch (error) {
+          console.error('Error storing client data:', error);
+          alert('Error storing client data. Please try again.');
+      } finally {
+          setIsSubmitting(false);
+      }
   };
 
   return (
@@ -36,6 +76,7 @@ const AddCompanyModal = ({ show, handleClose, fetchCompanies }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
           <Form.Group controlId="companyName">
             <Form.Label>Company Name</Form.Label>
             <Form.Control

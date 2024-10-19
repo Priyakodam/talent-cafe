@@ -1,0 +1,18 @@
+.manage-productivity-tracker-content {
+    display: flex;
+    justify-content: flex-end; 
+    align-items: flex-start; /* Moves the content towards the top */
+    padding-right: 20px; /* Adds some padding from the right */
+  }
+  
+  .manage-productivity-tracker-table {
+    width: 100%;
+    max-width: 1200px; /* Limit the maximum width of the table */
+    margin-left:0%;
+  }
+  .manage-productivity-tracker-card {
+    width: 100%; 
+    max-width: 78%; 
+    margin-left:10%;
+  }
+  
