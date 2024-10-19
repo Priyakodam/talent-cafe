@@ -1,0 +1,67 @@
+/* Container styles */
+.emp-daily-report-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 4%;
+}
+
+/* Card styles */
+.emp-daily-report-card {
+  border-radius: 10px;
+  margin-top: 20px;
+  width: 950px;
+  /* margin-right: 11px; */
+  margin-left: 80px;
+}
+
+/* Title styling */
+.daily-report-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Date input styling */
+#dateInput {
+  width: 180px;
+}
+
+/* Table styling */
+.emp-daily-report-table {
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.emp-daily-report-table th,
+.emp-daily-report-table td {
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.emp-daily-report-table th {
+  background-color: #8894ac;
+  color: white;
+  font-weight: bold;
+}
+
+.emp-daily-report-row:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.emp-daily-report-row:hover {
+  background-color: #e0e0e0;
+}
+
+/* Card header styles */
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: none;
+  font-weight: bold;
+}
+.emp-daily-report-info-card{
+  margin-left: 60%;
+  width: 278px;
+  margin-top: 39px;
+}

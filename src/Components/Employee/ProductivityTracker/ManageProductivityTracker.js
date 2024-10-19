@@ -41,7 +41,7 @@ const ManageProductivityTracker = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   };
@@ -49,6 +49,22 @@ const ManageProductivityTracker = () => {
   // Navigate to Edit Page
   const handleEdit = (entry) => {
     navigate("/edit-productivity-tracker", { state: { entry } });
+  };
+
+  // Handle delete functionality
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this entry?");
+    if (confirmDelete) {
+      try {
+        // Remove the document from Firestore
+        await db.collection('productivity-tracker').doc(id).delete();
+
+        // Remove the deleted entry from the local state
+        setProductivityData((prevData) => prevData.filter((entry) => entry.id !== id));
+      } catch (error) {
+        console.error('Error deleting productivity data:', error);
+      }
+    }
   };
 
   return (
@@ -110,7 +126,7 @@ const ManageProductivityTracker = () => {
                         <button className="btn btn-primary btn-sm mr-2" onClick={() => handleEdit(entry)}>
                           <i className="fas fa-edit"></i> {/* Edit Icon */}
                         </button>
-                        <button className="btn btn-danger btn-sm">
+                        <button className="btn btn-danger btn-sm" onClick={() => handleDelete(entry.id)}>
                           <i className="fas fa-trash-alt"></i> {/* Delete Icon */}
                         </button>
                       </td>

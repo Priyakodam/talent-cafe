@@ -109,6 +109,12 @@ const AdminDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
             
+            <li className={`nav-item ${location.pathname === '/emp-daily-report'? 'active' : ''}`}>
+              <Link className="nav-link" to="/emp-daily-report" onClick={handleNavItemClick}>
+                <FaUserPlus    className="nav-icon" />
+                {!collapsed && <span className="link_text">Emp Daily Report</span>}
+              </Link>
+            </li>
 
             
 

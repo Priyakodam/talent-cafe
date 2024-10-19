@@ -25,6 +25,7 @@ import ManageProductivityTracker from "./Components/Employee/ProductivityTracker
 import EditProductivityTracker from "./Components/Employee/ProductivityTracker/EditProductivityTracker"; // Import Edit Component
 import ProductivityTracker from "./Components/ProductivityTracker/ProductivityTracker";
 import EmpF2FCandidates from './Components/Employee/Screening/EmpF2FCandidates';
+import EmpDailyReport from "./Components/EmpDailyReport/EmpDailyReport";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ function App() {
             <Route path="/manage-productivity-tracker" element={<ManageProductivityTracker />} />
             <Route path="/edit-productivity-tracker" element={<EditProductivityTracker />} /> 
             <Route path="/productivity-all-tracker" element={<ProductivityTracker />} />
+            <Route path="/emp-daily-report" element={<EmpDailyReport />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
