@@ -216,7 +216,7 @@ const OpenPositions = () => {
             <EmployeeDashboard onToggleSidebar={setCollapsed} />
             <div className={`e-L1Candidates-content ${collapsed ? 'collapsed' : ''}`}>
                 
-                <div className="header-container">
+                <div className="L1-header-container">
                     <h2>L1 Candidates</h2>
                     <div className="header-actions">
                         {/* Position Dropdown */}

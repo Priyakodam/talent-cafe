@@ -212,7 +212,7 @@ const EmployeeScreening = () => {
     return (
         <div className='e-screening-container'>
             <EmployeeDashboard onToggleSidebar={setCollapsed} />
-            <div className={`e-screening-content ${collapsed ? 'collapsed' : ''}`}>
+            <div className= {`e-screening-content ${collapsed ? 'collapsed' : ''}`}>
                 <div className="header-container">
                     <h2>Applicants Details</h2>
                     <div className="header-actions">
@@ -259,7 +259,8 @@ const EmployeeScreening = () => {
                     </div>
                 </div>
                 <div className='table-responsive'>
-                    <table className="styled-table">
+    <table className="styled-table screening-custom-table" >
+
                         <thead>
                             <tr>
                                 <th>Name</th>

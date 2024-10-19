@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { useNavigate } from 'react-router-dom';
-import { db } from "../../Firebase/FirebaseConfig"; // Import Firestore config
-import { collection, getDocs, query, orderBy,doc, deleteDoc, updateDoc  } from 'firebase/firestore';
+import { db } from "../../Firebase/FirebaseConfig"; 
+import { collection, getDocs, query, orderBy, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import './EmployeeClient.css';
 import Table from 'react-bootstrap/Table';
 import Modal from 'react-bootstrap/Modal';
@@ -16,7 +16,7 @@ const EmployeeViewClients = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [clients, setClients] = useState([]);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [currentClient, setCurrentClient] = useState(null); // To track the client being edited
+    const [currentClient, setCurrentClient] = useState(null);
     const [editFormData, setEditFormData] = useState({
         companyName: '',
         contactPerson: '',
@@ -29,32 +29,30 @@ const EmployeeViewClients = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const clientsCollectionRef = collection(db, 'clients'); // Reference to the clients collection
-                // Query to order clients by timestamp in descending order (most recent first)
-                const q = query(clientsCollectionRef, orderBy("timestamp", "desc")); 
+                const clientsCollectionRef = collection(db, 'clients');
+                const q = query(clientsCollectionRef, orderBy("timestamp", "desc"));
                 const clientDocs = await getDocs(q);
-    
+
                 const clientData = clientDocs.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-    
-                setClients(clientData); // Store the client data in state
+
+                setClients(clientData);
             } catch (error) {
                 console.error("Error fetching clients:", error);
             }
         };
-    
+
         fetchClients();
-    }, []);// Dependency array includes user.uid to re-fetch data if user changes
+    }, []);
 
     const handleEditClick = (client) => {
-        setCurrentClient(client); // Set the current client to be edited
-        setEditFormData(client); // Populate the edit form with current client data
-        setShowEditModal(true); // Show the modal
+        setCurrentClient(client);
+        setEditFormData(client);
+        setShowEditModal(true);
     };
 
-    // Handle form input change for editing
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setEditFormData(prevState => ({
@@ -63,33 +61,29 @@ const EmployeeViewClients = () => {
         }));
     };
 
-    // Save changes to Firestore after editing
     const handleSaveChanges = async () => {
         try {
-            const clientDocRef = doc(db, 'clients', currentClient.id); // Reference to the document
-            await updateDoc(clientDocRef, editFormData); // Update Firestore document with new data
+            const clientDocRef = doc(db, 'clients', currentClient.id);
+            await updateDoc(clientDocRef, editFormData);
             alert('Client updated successfully!');
 
-            // Update the client list in the state
             setClients(prevClients => prevClients.map(client =>
                 client.id === currentClient.id ? { ...client, ...editFormData } : client
             ));
 
-            setShowEditModal(false); // Close the modal
+            setShowEditModal(false);
         } catch (error) {
             console.error("Error updating client:", error);
             alert('Error updating client data.');
         }
     };
 
-    // Handle Delete Button Click
     const handleDeleteClick = async (clientId) => {
         if (window.confirm("Are you sure you want to delete this client?")) {
             try {
-                const clientDocRef = doc(db, 'clients', clientId); // Reference to the document
-                await deleteDoc(clientDocRef); // Delete the document
+                const clientDocRef = doc(db, 'clients', clientId);
+                await deleteDoc(clientDocRef);
 
-                // Remove the deleted client from the state
                 setClients(prevClients => prevClients.filter(client => client.id !== clientId));
                 alert('Client deleted successfully!');
             } catch (error) {
@@ -98,25 +92,23 @@ const EmployeeViewClients = () => {
             }
         }
     };
-    
-    
-    
+
     const handleAddClient = () => {
-        navigate('/e-clients'); // Change this path to your actual route for adding clients
+        navigate('/e-clients');
     };
-
-
 
     return (
         <div className='e-clients-container'>
             <EmployeeDashboard onToggleSidebar={setCollapsed} />
             <div className={`e-clients-content ${collapsed ? 'collapsed' : ''}`}>
-            <button onClick={handleAddClient} className="btn btn-primary">
+                <div className="header-container">
+                    <h2 className='mt-3'>Client List</h2>
+                    <button onClick={handleAddClient} className="btn btn-primary">
                         <i className="fas fa-plus"></i> Add Client
                     </button>
-                <h2 className='mt-3'>Client List</h2>
+                </div>
                 <div className="table-responsive">
-                    <Table striped bordered hover >
+                    <Table striped bordered hover className="client-table">
                         <thead>
                             <tr>
                                 <th>S.No</th>
@@ -125,22 +117,19 @@ const EmployeeViewClients = () => {
                                 <th>Designation</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
-                                <th>Client Added by</th>
                                 <th>Status</th>
-                                <th>Action</th> 
-                                
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {clients.map((client, index) => (
                                 <tr key={client.id}>
-                                    <td>{index+1}</td>
+                                    <td>{index + 1}</td>
                                     <td>{client.companyName}</td>
                                     <td>{client.contactPerson}</td>
                                     <td>{client.designation}</td>
                                     <td>{client.email}</td>
                                     <td>{client.mobile}</td>
-                                    <td>{client.employeeName}</td>
                                     <td>{client.status}</td>
                                     <td>
                                         <button onClick={() => handleEditClick(client)} className="btn btn-warning btn-sm">

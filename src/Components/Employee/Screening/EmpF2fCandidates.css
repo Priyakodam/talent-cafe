@@ -4,11 +4,16 @@
   }
   
   .e-F2FCandidates-content {
-    margin-top: 60px; /* Adjust based on header height */
-    margin-left: 220px; /* Adjust based on sidebar width */
+    margin-top: 95px;
+    margin-left: 240px;
     padding: 20px;
-    width: calc(100% - 220px); /* Adjust width based on sidebar width */
+    width: calc(100% - 220px);
     transition: margin-left 0.3s ease, width 0.3s ease;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 83%;
   }
   
   .e-F2FCandidates-content.collapsed {

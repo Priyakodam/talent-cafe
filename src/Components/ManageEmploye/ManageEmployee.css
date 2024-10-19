@@ -184,6 +184,8 @@
   margin: 0 5px;
 }
 
+/* 
+//Form Update styles */
 .updateemployee {
   padding: 20px;
   margin: auto;
@@ -307,3 +309,4 @@ input {
     justify-content: flex-end;
     margin-left: auto; /* This pushes the button to the right */
 }
+
