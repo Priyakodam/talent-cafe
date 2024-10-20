@@ -263,6 +263,7 @@ const EmployeeScreening = () => {
 
                         <thead>
                             <tr>
+                                <th>S No</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
@@ -288,6 +289,7 @@ const EmployeeScreening = () => {
                         <tbody>
                             {filteredApplicants.map((applicant, index) => (
                                 <tr key={index}>
+                                    <td>{index + 1}</td>
                                     <td>{applicant.name}</td>
                                     <td>{applicant.email}</td>
                                     <td>{applicant.mobile}</td>
