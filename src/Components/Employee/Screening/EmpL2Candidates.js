@@ -263,7 +263,7 @@ const OpenPositions = () => {
                 </div>
                 
                 <div className='table-responsive'>
-                    <table className="styled-table">
+                    <table className="table table-striped table-bordered custom-table">
                         <thead>
                             <tr>
                                 <th>Name</th>

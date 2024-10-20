@@ -259,7 +259,7 @@ const EmployeeScreening = () => {
                     </div>
                 </div>
                 <div className='table-responsive'>
-    <table className="styled-table screening-custom-table" >
+    <table className="table table-striped table-bordered custom-table">
 
                         <thead>
                             <tr>
