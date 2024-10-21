@@ -21,6 +21,7 @@ const EmployeeScreening = () => {
     const [filteredPositions, setFilteredPositions] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedApplicant, setSelectedApplicant] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const [interviewDetails, setInterviewDetails] = useState({
         date: '',
         time: '',
@@ -102,7 +103,7 @@ const EmployeeScreening = () => {
     const fetchPositions = async () => {
         try {
             const positionsSnapshot = await db.collection('position')
-                .where('createdBy', '==', user.uid) 
+                // .where('employeeUid', '==', user.uid) 
                 .get();
 
             const fetchedPositions = positionsSnapshot.docs.map(doc => ({
@@ -111,7 +112,7 @@ const EmployeeScreening = () => {
             }));
 
             setPositions(fetchedPositions);
-
+            console.log("Positions=",fetchedPositions)
             const uniquePositionFrom = [...new Set(fetchedPositions.map(pos => pos.positionFrom))];
             setFilteredPositions(uniquePositionFrom);
         } catch (error) {
@@ -131,15 +132,26 @@ const EmployeeScreening = () => {
     const handleClearSelection = () => {
         setSelectedPositionFrom('');
         setSelectedPosition('');
+        setSearchTerm('');
     };
+
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
 
     const relevantPositions = positions.filter(position => position.positionFrom === selectedPositionFrom);
 
-    const filteredApplicants = applicants.filter(applicant =>
-        (!selectedPositionFrom || applicant.company === selectedPositionFrom) && // Match company
-        (!selectedPosition || applicant.positionInterested === selectedPosition) // Match position title
-    );
-    
+     const filteredApplicants = applicants.filter(applicant => {
+        const matchesPositionFrom = !selectedPositionFrom || applicant.company === selectedPositionFrom;
+        const matchesPosition = !selectedPosition || applicant.positionInterested === selectedPosition;
+        const matchesSearchTerm = !searchTerm || 
+            applicant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            applicant.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            applicant.skills.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return matchesPositionFrom && matchesPosition && matchesSearchTerm;
+    });
 
     const handleSendEmailClick = (applicant) => {
         setSelectedApplicant(applicant); // Store selected applicant
@@ -172,7 +184,7 @@ const EmployeeScreening = () => {
                 <p><strong>Date:</strong> ${date}</p>
                 <p><strong>Time:</strong> ${time}</p>
                 <p><strong>Interview Link:</strong> <a href="${interviewLink}">${interviewLink}</a></p>
-                <p><strong>Client Feedback:</strong> ${clientFeedback}</p>
+                <p><strong>Interview Description:</strong> ${clientFeedback}</p>
             `
         };
     
@@ -227,6 +239,14 @@ const EmployeeScreening = () => {
                     <h2>Applicants Details</h2>
                     <div className="header-actions">
                          {/* Position From Dropdown */}
+
+                         <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="search-input"
+                        />
                          <select
                             value={selectedPositionFrom}
                             onChange={handlePositionFromChange}
@@ -398,11 +418,11 @@ const EmployeeScreening = () => {
                             </Form.Group>
 
                             <Form.Group controlId="formFeedback">
-                                <Form.Label>Client Feedback</Form.Label>
+                                <Form.Label>Interview Description</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows={3}
-                                    placeholder="Enter feedback"
+                                    placeholder="Enter Description"
                                     value={interviewDetails.clientFeedback}
                                     onChange={(e) => setInterviewDetails({ ...interviewDetails, clientFeedback: e.target.value })}
                                 />

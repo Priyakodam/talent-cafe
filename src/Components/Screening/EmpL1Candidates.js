@@ -121,6 +121,7 @@ const OpenPositions = () => {
                     <table className="styled-table">
                         <thead>
                             <tr>
+                            <th>S No</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
@@ -139,8 +140,9 @@ const OpenPositions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredApplicants.map(candidate => (
+                            {filteredApplicants.map((candidate, index) => (
                                 <tr key={candidate.id}>
+                                    <td>{index + 1}</td>
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.mobile}</td>
