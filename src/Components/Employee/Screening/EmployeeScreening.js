@@ -9,6 +9,7 @@ import { FaTimes } from 'react-icons/fa';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
 import "./EmployeeScreening.css";
+import BulkUploadComponent from './BulkUpload';
 
 const EmployeeScreening = () => {
     const { user } = useAuth();
@@ -207,7 +208,16 @@ const EmployeeScreening = () => {
     
     
     
-    
+    const [showBulkUploadModal, setShowBulkUploadModal] = useState(false);
+
+    const handleBulkUploadClick = () => {
+        setShowBulkUploadModal(true);
+    };
+
+    const handleBulkUploadComplete = () => {
+        setShowBulkUploadModal(false);
+        // You can refresh applicants here if necessary
+    };
 
     return (
         <div className='e-screening-container'>
@@ -256,6 +266,9 @@ const EmployeeScreening = () => {
                         <button className="add-profile-button" onClick={handleAddProfileClick}>
                             + Add Profile
                         </button>
+                        <button className="add-profile-button" onClick={handleBulkUploadClick}>
+                + Bulk Upload
+            </button>
                     </div>
                 </div>
                 <div className='table-responsive'>
@@ -405,6 +418,14 @@ const EmployeeScreening = () => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal show={showBulkUploadModal} onHide={() => setShowBulkUploadModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Bulk Upload</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <BulkUploadComponent user={user} onUploadComplete={handleBulkUploadComplete} />
+                </Modal.Body>
+            </Modal>
             </div>
         </div>
     );

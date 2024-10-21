@@ -71,12 +71,13 @@ const PositionList = () => {
             </button>
           </div>
           <div className="card-body">
-            <table className="table table-striped table-bordered custom-table">
+            <table className="table table-striped table-bordered custom-table ">
               <thead>
                 <tr>
                   <th>S.no</th>
-                  <th>Position Title</th>
                   <th>Position From</th>
+                  <th>Department</th>
+                  <th>Position Title</th>
                   <th>Budget</th>
                   <th>Number Of Positions</th>
                   <th>Experience (years)</th>
@@ -92,8 +93,9 @@ const PositionList = () => {
                   positions.map((position, index) => (
                     <tr key={position.id}>
                       <td>{index + 1}</td>
-                      <td>{position.positionTitle}</td>
                       <td>{position.positionFrom}</td>
+                      <td>{position.department}</td>
+                      <td>{position.positionTitle}</td>
                       <td>{position.budget}</td>
                       <td>{position.numOfOpenPositions}</td>
                       <td>{position.experience}</td>
@@ -102,19 +104,22 @@ const PositionList = () => {
                       <td>{position.status}</td>
                       <td>{new Date(position.createdAt.seconds * 1000).toLocaleDateString()}</td>
                       <td>
-                        <button 
-                          className="btn btn-sm btn-warning me-2" 
-                          onClick={() => handleEdit(position)}
-                        >
-                          <FontAwesomeIcon icon={faEdit} /> {/* Edit icon */}
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-danger" 
-                          onClick={() => handleDelete(position.id)}
-                        >
-                          <FontAwesomeIcon icon={faTrashAlt} /> {/* Delete icon */}
-                        </button>
-                      </td>
+  <div className="d-inline-flex">
+    <button 
+      className="btn btn-sm btn-warning me-2" 
+      onClick={() => handleEdit(position)}
+    >
+      <FontAwesomeIcon icon={faEdit} /> {/* Edit icon */}
+    </button>
+    <button 
+      className="btn btn-sm btn-danger" 
+      onClick={() => handleDelete(position.id)}
+    >
+      <FontAwesomeIcon icon={faTrashAlt} /> {/* Delete icon */}
+    </button>
+  </div>
+</td>
+
                     </tr>
                   ))
                 ) : (

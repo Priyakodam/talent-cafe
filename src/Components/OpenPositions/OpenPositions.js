@@ -48,46 +48,48 @@ const OpenPositions = () => {
                     
                 </div>
 
-                <table className="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>S.no</th>
-                            <th>Position Title</th>
-                            <th>Position From</th>
-                            <th>Budget</th>
-                            <th>Number Of Positions</th>
-                            <th>Experience (years)</th>
-                            <th>Priority</th>
-                            <th>Priority Description</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                          
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {positions.length > 0 ? (
-                            positions.map((position, index) => (
-                                <tr key={position.id}>
-                                    <td>{index + 1}</td>
-                                    <td>{position.positionTitle}</td>
-                                    <td>{position.positionFrom}</td>
-                                    <td>{position.budget}</td>
-                                    <td>{position.numOfOpenPositions}</td>
-                                    <td>{position.experience}</td>
-                                    <td>{position.priority}</td>
-                                    <td>{position.priorityDescription}</td>
-                                    <td>{position.status}</td>
-                                    <td>{new Date(position.createdAt.seconds * 1000).toLocaleDateString()}</td>
-                                    
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="11" className="text-center">No open positions found</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                <table className="table table-striped table-bordered custom-table ">
+              <thead>
+                <tr>
+                  <th>S.no</th>
+                  <th>Position From</th>
+                  <th>Department</th>
+                  <th>Position Title</th>
+                  <th>Budget</th>
+                  <th>Number Of Positions</th>
+                  <th>Experience (years)</th>
+                  <th>Priority</th>
+                  <th>Priority Description</th>
+                  <th>Status</th>
+                  <th>Created At</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                {positions.length > 0 ? (
+                  positions.map((position, index) => (
+                    <tr key={position.id}>
+                      <td>{index + 1}</td>
+                      <td>{position.positionFrom}</td>
+                      <td>{position.department}</td>
+                      <td>{position.positionTitle}</td>
+                      <td>{position.budget}</td>
+                      <td>{position.numOfOpenPositions}</td>
+                      <td>{position.experience}</td>
+                      <td>{position.priority}</td>
+                      <td>{position.priorityDescription}</td>
+                      <td>{position.status}</td>
+                      <td>{new Date(position.createdAt.seconds * 1000).toLocaleDateString()}</td>
+                      
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="11" className="text-center">No open positions found</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
             </div>
         </div>
     );

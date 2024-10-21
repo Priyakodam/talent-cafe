@@ -7,6 +7,7 @@ import "./EmployeeOpenPositions.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddPositionModal from './PositionRequired'; // Import the modal for position titles
 import AddCompanyModal from './Client'; // Import the modal for companies
+import AddDepartmentModal from './AddDepartment'; // Import the modal for departments
 
 const OpenPositions = () => {
   const { user } = useAuth();
@@ -17,6 +18,9 @@ const OpenPositions = () => {
   const positionId = queryParams.get('id');
 
   const [collapsed, setCollapsed] = useState(false);
+  const [department, setDepartment] = useState(''); // New state for department
+  const [departmentDescription, setDepartmentDescription] = useState(''); // Department description
+  const [departments, setDepartments] = useState([]); // State to store departments
   const [positionTitle, setPositionTitle] = useState('');
   const [positionFrom, setPositionFrom] = useState('');
   const [budget, setBudget] = useState('');
@@ -29,9 +33,22 @@ const OpenPositions = () => {
   const [companies, setCompanies] = useState([]); // State to store companies
   const [showPositionModal, setShowPositionModal] = useState(false);
   const [showCompanyModal, setShowCompanyModal] = useState(false); // Modal state for companies
+  const [showDepartmentModal, setShowDepartmentModal] = useState(false); // Modal state for department
 
   const handlePositionModalClose = () => setShowPositionModal(false);
   const handleCompanyModalClose = () => setShowCompanyModal(false);
+  const handleDepartmentModalClose = () => setShowDepartmentModal(false); // Handle department modal close
+
+  // Fetch departments from Firestore
+  const fetchDepartments = async () => {
+    try {
+      const snapshot = await db.collection('departments').get(); // Assuming the department data is stored in 'departments'
+      const departmentList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setDepartments(departmentList);
+    } catch (error) {
+      console.error("Error fetching departments:", error);
+    }
+  };
 
   // Fetch positions from Firestore
   const fetchPositions = async () => {
@@ -58,6 +75,7 @@ const OpenPositions = () => {
   useEffect(() => {
     fetchPositions();
     fetchCompanies();
+    fetchDepartments(); // Fetch departments on mount
   }, []);
 
   useEffect(() => {
@@ -75,6 +93,7 @@ const OpenPositions = () => {
             setStatus(positionData.status);
             setPriority(positionData.priority);
             setPriorityDescription(positionData.priorityDescription);
+            setDepartment(positionData.department); // Set department
           }
         } catch (error) {
           console.error("Error fetching position for edit:", error);
@@ -88,6 +107,7 @@ const OpenPositions = () => {
     e.preventDefault();
     try {
       const data = {
+        department, // Include department in data
         positionTitle,
         positionFrom,
         budget,
@@ -108,6 +128,7 @@ const OpenPositions = () => {
         console.log("Position added successfully");
       }
 
+      setDepartment('');
       setPositionTitle('');
       setPositionFrom('');
       setBudget('');
@@ -126,12 +147,69 @@ const OpenPositions = () => {
     <div className='e-openpositions-container'>
       <EmployeeDashboard onToggleSidebar={setCollapsed} />
       <div className={`e-openpositions-content ${collapsed ? 'collapsed' : ''}`}>
-        <h2>Welcome, {user.name}</h2>
-        <h3>{isEditMode ? 'Edit Position' : 'Open Positions'}</h3>
+       
+        <h3 className='text-center'>{isEditMode ? 'Edit Position' : 'Open Positions'}</h3>
 
         <form onSubmit={handleSubmit}>
+          {/* Department Dropdown */}
           <div className="row">
+          <div className="col-md-6">
+              <div className="form-group">
+                <label>Position From:</label>
+                <div className="input-group">
+                  <select
+                    className="form-control"
+                    value={positionFrom}
+                    onChange={(e) => setPositionFrom(e.target.value)}
+                    required
+                  >
+                    <option value="">Select Company</option>
+                    {companies.map(company => (
+                      <option key={company.id} value={company.companyName}>{company.companyName}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => setShowCompanyModal(true)}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
             <div className="col-md-6">
+              <div className="form-group">
+                <label>Department:</label>
+                <div className="input-group">
+                  <select
+                    className="form-control"
+                    value={department}
+                    onChange={(e) => setDepartment(e.target.value)}
+                    required
+                  >
+                    <option value="">Select Department</option>
+                    {departments.map(dept => (
+                      <option key={dept.id} value={dept.departmentName}>{dept.departmentName}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                    onClick={() => setShowDepartmentModal(true)}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+        
+           
+            
+          </div>
+
+          <div className="row">
+          <div className="col-md-6">
               <div className="form-group">
                 <label>Position Title:</label>
                 <div className="input-group">
@@ -159,34 +237,6 @@ const OpenPositions = () => {
 
             <div className="col-md-6">
               <div className="form-group">
-                <label>Position From:</label>
-                <div className="input-group">
-                  <select
-                    className="form-control"
-                    value={positionFrom}
-                    onChange={(e) => setPositionFrom(e.target.value)}
-                    required
-                  >
-                    <option value="">Select Company</option>
-                    {companies.map(company => (
-                      <option key={company.id} value={company.companyName}>{company.companyName}</option>
-                    ))}
-                  </select>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={() => setShowCompanyModal(true)}
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-md-6">
-              <div className="form-group">
                 <label>Budget:</label>
                 <input
                   type="number"
@@ -198,7 +248,11 @@ const OpenPositions = () => {
               </div>
             </div>
 
-            <div className="col-md-6">
+            
+          </div>
+
+          <div className="row">
+          <div className="col-md-6">
               <div className="form-group">
                 <label>Experience (years):</label>
                 <input
@@ -210,9 +264,6 @@ const OpenPositions = () => {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="row">
             <div className="col-md-6">
               <div className="form-group">
                 <label>Number of Open Positions:</label>
@@ -226,7 +277,12 @@ const OpenPositions = () => {
               </div>
             </div>
 
-            <div className="col-md-6">
+           
+          </div>
+
+          {/* Priority Section */}
+          <div className="row">
+          <div className="col-md-6">
               <div className="form-group">
                 <label>Status:</label>
                 <select
@@ -239,10 +295,6 @@ const OpenPositions = () => {
                 </select>
               </div>
             </div>
-          </div>
-
-          {/* Priority Section */}
-          <div className="row">
             <div className="col-md-6">
               <div className="form-group">
                 <label>Priority:</label>
@@ -278,14 +330,18 @@ const OpenPositions = () => {
           
 
           {/* Submit Button */}
-          <button type="submit" className="btn btn-primary">
-            {isEditMode ? 'Update Position' : 'Save Position'}
-          </button>
+          <div className="text-center">
+  <button type="submit" className="btn btn-primary mt-3">
+    {isEditMode ? 'Update Position' : 'Save Position'}
+  </button>
+</div>
+
         </form>
 
         {/* Modals */}
         <AddPositionModal show={showPositionModal} handleClose={handlePositionModalClose} fetchPositions={fetchPositions} />
         <AddCompanyModal show={showCompanyModal} handleClose={handleCompanyModalClose} fetchCompanies={fetchCompanies} />
+        <AddDepartmentModal show={showDepartmentModal} handleClose={handleDepartmentModalClose} fetchDepartments={fetchDepartments} />
       </div>
     </div>
   );
