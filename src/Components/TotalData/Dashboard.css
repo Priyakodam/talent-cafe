@@ -1,3 +1,29 @@
-.card-title{
+.card-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin: -20px;
+}
+
+.card-count {
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.card-footer {
     padding-top: 10px;
+    text-align: center;
+}
+
+.view-details-link {
+    font-size: 14px;
+    color: #ffffff;
+    text-decoration: none;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.view-details-link:hover {
+    text-decoration: underline;
 }
