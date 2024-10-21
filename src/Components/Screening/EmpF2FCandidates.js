@@ -143,6 +143,7 @@ const OpenPositions = () => {
                                 <th>Company</th>
                                 <th>Designation</th>
                                 <th>Skills</th>
+                                <th>Recruiter Name</th>
                                 <th>Resume</th>
                                 <th>F2FStatus</th>
                               
@@ -164,6 +165,7 @@ const OpenPositions = () => {
                                     <td>{candidate.company}</td>
                                     <td>{candidate.designation}</td>
                                     <td>{candidate.skills}</td>
+                                    <td>{candidate.userName}</td>
                                     <td> 
                                         <a 
                                             href={candidate.resume} 
