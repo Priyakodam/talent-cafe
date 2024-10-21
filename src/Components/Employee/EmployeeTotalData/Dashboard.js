@@ -2,6 +2,8 @@ import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Legend, LabelList } from 'recharts';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
+// import './Dashboard.css';
 
 // Mock Data
 const totalPositions = 100;  // Example total number of open positions (internal + client)
@@ -40,6 +42,103 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const Dashboard = () => {
   return (
     <Container fluid className="p-4">
+      <Row className="mb-4">
+    <Col md={3}>
+      <Card className="text-white bg-primary" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">Clients</h5>
+          <h3 className="card-count">5</h3>
+          <div className="card-footer">
+            <Link to="/clients" className="view-details-link">View Details &rarr;</Link>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+
+    <Col md={3}>
+      <Card className="text-white bg-success" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">Open Positions</h5>
+          <h3 className="card-count">6</h3>
+          <div className="card-footer">
+            <a href="/openpositions" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+
+    <Col md={3}>
+      <Card className="text-white bg-danger" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">Screening</h5>
+          <h3 className="card-count">30</h3>
+          <div className="card-footer">
+            <a href="/screening" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+
+    <Col md={3}>
+      <Card className="text-white bg-primary" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">L1-candidates</h5>
+          <h3 className="card-count">25</h3>
+          <div className="card-footer">
+            <a href="/a-L1candidates" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+
+    <Col md={3}>
+      <Card className="text-white bg-primary" style={{ width: '250px', height: '150px', marginTop:'50px' }}>
+        <Card.Body>
+          <h5 className="card-title">L2-candidates</h5>
+          <h3 className="card-count">20</h3>
+          <div className="card-footer">
+            <a href="/a-L2candidates" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+    <Col md={3}>
+      <Card className="text-white bg-danger" style={{ width: '250px', height: '150px',marginTop:'50px' }}>
+        <Card.Body>
+          <h5 className="card-title">F2F-candidates </h5>
+          <h3 className="card-count">2</h3>
+          <div className="card-footer">
+            <a href="/a-F2Fcandidates" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+
+    <Col md={3}>
+      <Card className="text-white bg-secondary" style={{ width: '250px', height: '150px', marginTop:'50px' }}>
+        <Card.Body>
+          <h5 className="card-title">Employee's</h5>
+          <h3 className="card-count">3</h3>
+          <div className="card-footer">
+            <a href="/manageemployee" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+
+    <Col md={3}>
+      <Card className="text-white bg-primary" style={{ width: '250px', height: '150px', marginTop:'50px' }}>
+        <Card.Body>
+          <h5 className="card-title">Productivity</h5>
+          <h3 className="card-count">3</h3>
+          <div className="card-footer">
+            <a href="/productivity-all-tracker" className="view-details-link">View Details &rarr;</a>
+          </div>
+        </Card.Body>
+      </Card>
+    </Col>
+    </Row>
+
       <Row className="mb-4">
         <Col>
           <h2 className="text-center">Recruitment Dashboard</h2>
