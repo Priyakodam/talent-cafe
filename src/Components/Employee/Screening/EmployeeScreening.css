@@ -109,6 +109,16 @@
   cursor: not-allowed;
 }
 
+/* .search-input {
+  width: 200px;
+  padding: 8px 12px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+} */
+
 /* Responsive Design */
 @media (max-width: 767px) {
   .e-screening-container {

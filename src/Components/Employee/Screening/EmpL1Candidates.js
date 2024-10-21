@@ -18,6 +18,7 @@ const OpenPositions = () => {
     const [filteredPositions, setFilteredPositions] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [selectedApplicant, setSelectedApplicant] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const [interviewDetails, setInterviewDetails] = useState({
         date: '',
         time: '',
@@ -55,7 +56,7 @@ const OpenPositions = () => {
     const fetchPositions = async () => {
         try {
             const positionsSnapshot = await db.collection('position')
-                .where('createdBy', '==', user.uid) 
+                // .where('employeeUid', '==', user.uid) 
                 .get();
 
             const fetchedPositions = positionsSnapshot.docs.map(doc => ({
@@ -64,7 +65,7 @@ const OpenPositions = () => {
             }));
 
             setPositions(fetchedPositions);
-
+            console.log("Positions=",fetchedPositions)
             const uniquePositionFrom = [...new Set(fetchedPositions.map(pos => pos.positionFrom))];
             setFilteredPositions(uniquePositionFrom);
         } catch (error) {
@@ -84,14 +85,31 @@ const OpenPositions = () => {
     const handleClearSelection = () => {
         setSelectedPositionFrom('');
         setSelectedPosition('');
+        setSearchTerm('');
     };
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+
 
     const relevantPositions = positions.filter(position => position.positionFrom === selectedPositionFrom);
 
-    const filteredApplicants = l1Candidates.filter(candidate =>
-        (!selectedPositionFrom || candidate.company === selectedPositionFrom) && // Match company
-        (!selectedPosition || candidate.positionInterested === selectedPosition) // Match position title
-    );
+    // const filteredApplicants = l1Candidates.filter(candidate =>
+    //     (!selectedPositionFrom || candidate.company === selectedPositionFrom) && // Match company
+    //     (!selectedPosition || candidate.positionInterested === selectedPosition) // Match position title
+    // );
+
+    const filteredApplicants = l1Candidates.filter(candidate => {
+        const matchesPositionFrom = !selectedPositionFrom || candidate.company === selectedPositionFrom;
+        const matchesPosition = !selectedPosition || candidate.positionInterested === selectedPosition;
+        const matchesSearchTerm = !searchTerm || 
+        candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        candidate.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        candidate.skills.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return matchesPositionFrom && matchesPosition && matchesSearchTerm;
+    });
 
     const handleStatusChange = async (e, candidate) => {
         const updatedL1Status = e.target.value;
@@ -175,7 +193,7 @@ const OpenPositions = () => {
                 <p><strong>Date:</strong> ${date}</p>
                 <p><strong>Time:</strong> ${time}</p>
                 <p><strong>Interview Link:</strong> <a href="${interviewLink}">${interviewLink}</a></p>
-                <p><strong>Client Feedback:</strong> ${clientFeedback}</p>
+                <p><strong>Interview Description:</strong> ${clientFeedback}</p>
             `
         };
     
@@ -220,6 +238,14 @@ const OpenPositions = () => {
                     <h2>L1 Candidates</h2>
                     <div className="header-actions">
                         {/* Position Dropdown */}
+
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="search-input"
+                        />
                         <select
                             value={selectedPositionFrom}
                             onChange={handlePositionFromChange}
@@ -383,11 +409,11 @@ const OpenPositions = () => {
                             </Form.Group>
 
                             <Form.Group controlId="formFeedback">
-                                <Form.Label>Client Feedback</Form.Label>
+                                <Form.Label>Interview Description</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     rows={3}
-                                    placeholder="Enter feedback"
+                                    placeholder="Enter Description"
                                     value={interviewDetails.clientFeedback}
                                     onChange={(e) => setInterviewDetails({ ...interviewDetails, clientFeedback: e.target.value })}
                                 />

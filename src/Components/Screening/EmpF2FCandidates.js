@@ -8,6 +8,8 @@ const OpenPositions = () => {
     const [f2FCandidates, setF2FCandidates] = useState([]);
     const [positions, setPositions] = useState([]);
     const [selectedPosition, setSelectedPosition] = useState('');
+    const [selectedPositionFrom, setSelectedPositionFrom] = useState('');
+    const [filteredPositions, setFilteredPositions] = useState([]);
   
 
     // Fetch F2F candidates from Firestore
@@ -37,12 +39,15 @@ const OpenPositions = () => {
     // Fetch positions from Firestore
     const fetchPositions = async () => {
         try {
-            const positionsSnapshot = await db.collection('positionsrequired').get();
+            const positionsSnapshot = await db.collection('position').get();
             const fetchedPositions = positionsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
             setPositions(fetchedPositions);
+            const uniquePositionFrom = [...new Set(fetchedPositions.map(pos => pos.positionFrom))];
+            setFilteredPositions(uniquePositionFrom);
         } catch (error) {
             console.error("Error fetching positions:", error);
         }
@@ -51,6 +56,23 @@ const OpenPositions = () => {
     useEffect(() => {
         fetchPositions();
     }, []);
+
+    const handlePositionFromChange = (event) => {
+        const selected = event.target.value;
+        setSelectedPositionFrom(selected);
+    };
+
+    const handleClearSelection = () => {
+        setSelectedPositionFrom('');
+        setSelectedPosition('');
+    };
+
+    const relevantPositions = positions.filter(position => position.positionFrom === selectedPositionFrom);
+
+    const filteredApplicants = f2FCandidates.filter(candidate =>
+        (!selectedPositionFrom || candidate.company === selectedPositionFrom) && // Match company
+        (!selectedPosition || candidate.positionInterested === selectedPosition) // Match position title
+    );
 
 
     
@@ -65,17 +87,42 @@ const OpenPositions = () => {
                     <div className="header-actions">
                         {/* Position Dropdown */}
                         <select
-                            value={selectedPosition}
-                            onChange={(e) => setSelectedPosition(e.target.value)}
+                            value={selectedPositionFrom}
+                            onChange={handlePositionFromChange}
                             className="position-dropdown"
                         >
-                            <option value="">Select Position</option>
-                            {positions.map(position => (
-                                <option key={position.id} value={position.positionName}>
-                                    {position.positionName}
+                            <option value="" disabled>Select Company</option>
+                            {filteredPositions.map((positionFrom, index) => (
+                                <option key={index} value={positionFrom}>
+                                    {positionFrom}
                                 </option>
                             ))}
                         </select>
+
+                        {/* Position Dropdown */}
+                        <select
+                            value={selectedPosition}
+                            onChange={(e) => setSelectedPosition(e.target.value)}
+                            className="position-dropdown"
+                            disabled={!selectedPositionFrom} // Disable if no PositionFrom is selected
+                        >
+                            <option value="" disabled>Select Position</option>
+                            {relevantPositions.map(position => (
+                                <option key={position.id} value={position.positionTitle}>
+                                    {position.positionTitle}
+                                </option>
+                            ))}
+                        </select>
+
+                        {selectedPositionFrom && (
+                            <button
+                                className="clear-selection-icon"
+                                onClick={handleClearSelection}
+                                style={{ cursor: 'pointer', color: 'red' }}
+                            >
+                                Clear Selection
+                            </button>
+                        )}
                     </div>
                 </div>
                 
@@ -83,6 +130,7 @@ const OpenPositions = () => {
                     <table className="styled-table">
                         <thead>
                             <tr>
+                            <th>S No</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
@@ -101,8 +149,9 @@ const OpenPositions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {f2FCandidates.map(candidate => (
+                            {filteredApplicants.map((candidate, index) => (
                                 <tr key={candidate.id}>
+                                    <td>{index + 1}</td>
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.mobile}</td>

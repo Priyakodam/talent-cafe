@@ -3,6 +3,7 @@ import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
 import { useAuth } from "../../Context/AuthContext";
 import { db } from '../../Firebase/FirebaseConfig'; // Make sure to import your Firestore config
 import "./EmpF2fCandidates.css";
+import { FaTimes } from 'react-icons/fa';
 
 const OpenPositions = () => {
     const { user } = useAuth();
@@ -10,6 +11,9 @@ const OpenPositions = () => {
     const [f2FCandidates, setF2FCandidates] = useState([]);
     const [positions, setPositions] = useState([]);
     const [selectedPosition, setSelectedPosition] = useState('');
+    const [selectedPositionFrom, setSelectedPositionFrom] = useState('');
+    const [filteredPositions, setFilteredPositions] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchF2FCandidates = async () => {
@@ -44,20 +48,59 @@ const OpenPositions = () => {
     // Fetch positions from Firestore
     const fetchPositions = async () => {
         try {
-            const positionsSnapshot = await db.collection('positionsrequired').get();
+            const positionsSnapshot = await db.collection('position')
+                // .where('employeeUid', '==', user.uid) 
+                .get();
+
             const fetchedPositions = positionsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
             setPositions(fetchedPositions);
+            console.log("Positions=",fetchedPositions)
+            const uniquePositionFrom = [...new Set(fetchedPositions.map(pos => pos.positionFrom))];
+            setFilteredPositions(uniquePositionFrom);
         } catch (error) {
             console.error("Error fetching positions:", error);
         }
     };
 
     useEffect(() => {
-        fetchPositions(); // Fetch positions when the component mounts
+        fetchPositions();
     }, []);
+
+    const handlePositionFromChange = (event) => {
+        const selected = event.target.value;
+        setSelectedPositionFrom(selected);
+    };
+
+    const handleClearSelection = () => {
+        setSelectedPositionFrom('');
+        setSelectedPosition('');
+        setSearchTerm('');
+    };
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const relevantPositions = positions.filter(position => position.positionFrom === selectedPositionFrom);
+
+    // const filteredApplicants = l2Candidates.filter(candidate =>
+    //     (!selectedPositionFrom || candidate.company === selectedPositionFrom) && // Match company
+    //     (!selectedPosition || candidate.positionInterested === selectedPosition) // Match position title
+    // );
+
+    const filteredApplicants = f2FCandidates.filter(candidate => {
+        const matchesPositionFrom = !selectedPositionFrom || candidate.company === selectedPositionFrom;
+        const matchesPosition = !selectedPosition || candidate.positionInterested === selectedPosition;
+        const matchesSearchTerm = !searchTerm || 
+        candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        candidate.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        candidate.skills.toLowerCase().includes(searchTerm.toLowerCase());
+
+        return matchesPositionFrom && matchesPosition && matchesSearchTerm;
+    });
 
 
     
@@ -72,18 +115,48 @@ const OpenPositions = () => {
                     <h2>F2F Candidates</h2>
                     <div className="header-actions">
                         {/* Position Dropdown */}
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="search-input"
+                        />
+                        <select
+                            value={selectedPositionFrom}
+                            onChange={handlePositionFromChange}
+                            className="position-dropdown"
+                        >
+                            <option value="" disabled>Select Company</option>
+                            {filteredPositions.map((positionFrom, index) => (
+                                <option key={index} value={positionFrom}>
+                                    {positionFrom}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* Position Dropdown */}
                         <select
                             value={selectedPosition}
                             onChange={(e) => setSelectedPosition(e.target.value)}
                             className="position-dropdown"
+                            disabled={!selectedPositionFrom} // Disable if no PositionFrom is selected
                         >
-                            <option value="">Select Position</option>
-                            {positions.map(position => (
-                                <option key={position.id} value={position.positionName}>
-                                    {position.positionName}
+                            <option value="" disabled>Select Position</option>
+                            {relevantPositions.map(position => (
+                                <option key={position.id} value={position.positionTitle}>
+                                    {position.positionTitle}
                                 </option>
                             ))}
                         </select>
+
+                        {selectedPositionFrom && (
+                            <FaTimes
+                                className="clear-selection-icon"
+                                onClick={handleClearSelection}
+                                style={{ cursor: 'pointer',  color:'red' }}
+                            />
+                        )}
                     </div>
                 </div>
                 
@@ -116,8 +189,9 @@ const OpenPositions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {f2FCandidates.map((candidate, index) => (
+                            {filteredApplicants.map((candidate, index) => (
                                 <tr key={candidate.id}>
+                                     <td>{index + 1}</td>
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.mobile}</td>
