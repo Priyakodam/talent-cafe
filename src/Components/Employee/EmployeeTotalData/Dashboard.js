@@ -49,7 +49,7 @@ const Dashboard = () => {
           <h5 className="card-title">Clients</h5>
           <h3 className="card-count">5</h3>
           <div className="card-footer">
-            <Link to="/clients" className="view-details-link">View Details &rarr;</Link>
+            <Link to="/e-view-clients" className="view-details-link">View Details &rarr;</Link>
           </div>
         </Card.Body>
       </Card>
@@ -61,7 +61,7 @@ const Dashboard = () => {
           <h5 className="card-title">Open Positions</h5>
           <h3 className="card-count">6</h3>
           <div className="card-footer">
-            <a href="/openpositions" className="view-details-link">View Details &rarr;</a>
+            <a href="/e-viewopenpositions" className="view-details-link">View Details &rarr;</a>
           </div>
         </Card.Body>
       </Card>
@@ -73,7 +73,7 @@ const Dashboard = () => {
           <h5 className="card-title">Screening</h5>
           <h3 className="card-count">30</h3>
           <div className="card-footer">
-            <a href="/screening" className="view-details-link">View Details &rarr;</a>
+            <a href="/e-screening" className="view-details-link">View Details &rarr;</a>
           </div>
         </Card.Body>
       </Card>
@@ -85,7 +85,7 @@ const Dashboard = () => {
           <h5 className="card-title">L1-candidates</h5>
           <h3 className="card-count">25</h3>
           <div className="card-footer">
-            <a href="/a-L1candidates" className="view-details-link">View Details &rarr;</a>
+            <a href="/e-L1candidates" className="view-details-link">View Details &rarr;</a>
           </div>
         </Card.Body>
       </Card>
@@ -97,7 +97,7 @@ const Dashboard = () => {
           <h5 className="card-title">L2-candidates</h5>
           <h3 className="card-count">20</h3>
           <div className="card-footer">
-            <a href="/a-L2candidates" className="view-details-link">View Details &rarr;</a>
+            <a href="/e-L2candidates" className="view-details-link">View Details &rarr;</a>
           </div>
         </Card.Body>
       </Card>
@@ -108,23 +108,12 @@ const Dashboard = () => {
           <h5 className="card-title">F2F-candidates </h5>
           <h3 className="card-count">2</h3>
           <div className="card-footer">
-            <a href="/a-F2Fcandidates" className="view-details-link">View Details &rarr;</a>
+            <a href="/e-F2Fcandidates" className="view-details-link">View Details &rarr;</a>
           </div>
         </Card.Body>
       </Card>
     </Col>
 
-    <Col md={3}>
-      <Card className="text-white bg-secondary" style={{ width: '250px', height: '150px', marginTop:'50px' }}>
-        <Card.Body>
-          <h5 className="card-title">Employee's</h5>
-          <h3 className="card-count">3</h3>
-          <div className="card-footer">
-            <a href="/manageemployee" className="view-details-link">View Details &rarr;</a>
-          </div>
-        </Card.Body>
-      </Card>
-    </Col>
 
     <Col md={3}>
       <Card className="text-white bg-primary" style={{ width: '250px', height: '150px', marginTop:'50px' }}>
@@ -132,7 +121,7 @@ const Dashboard = () => {
           <h5 className="card-title">Productivity</h5>
           <h3 className="card-count">3</h3>
           <div className="card-footer">
-            <a href="/productivity-all-tracker" className="view-details-link">View Details &rarr;</a>
+            <a href="/productivity-tracker" className="view-details-link">View Details &rarr;</a>
           </div>
         </Card.Body>
       </Card>
