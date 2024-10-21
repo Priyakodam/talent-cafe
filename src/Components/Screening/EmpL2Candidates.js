@@ -1,141 +1,171 @@
 import React, { useState, useEffect } from 'react';
-import EmployeeDashboard from '../EmployeeDashboard/EmployeeDashboard';
-import { useAuth } from "../../Context/AuthContext";
-import { db } from '../../Firebase/FirebaseConfig'; // Make sure to import your Firestore config
-import "./EmpF2fCandidates.css";
+import { db } from './../Firebase/FirebaseConfig'; // Import Firestore config
+import "./EmpL2Candidates.css";
+
+import AdminDashboard from '../Dashboard/Dashboard';
+
 
 const OpenPositions = () => {
-    const { user } = useAuth();
     const [collapsed, setCollapsed] = useState(false);
-    const [f2FCandidates, setF2FCandidates] = useState([]);
+    const [l2Candidates, setL2Candidates] = useState([]);
     const [positions, setPositions] = useState([]);
     const [selectedPosition, setSelectedPosition] = useState('');
+    const [selectedPositionFrom, setSelectedPositionFrom] = useState('');
+    const [filteredPositions, setFilteredPositions] = useState([]);
+ 
 
+    // Fetch L2 candidates from Firestore
     useEffect(() => {
-        const fetchF2FCandidates = async () => {
+        const fetchL2Candidates = async () => {
             try {
-                const snapshot = await db.collection('F2F_Candidates').doc(user.uid).get();
+                const snapshot = await db.collection('L2_Candidates').get();
                 let candidatesData = [];
-        
-                if (snapshot.exists) {
-                    const data = snapshot.data();
-                    // Check if the expected field exists and is an array
-                    if (Array.isArray(data.F2F_Candidates)) {
-                        candidatesData = [...data.F2F_Candidates];
-                    } else {
-                        console.error("F2F_Candidates is not an array or doesn't exist");
+  
+                snapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    if (Array.isArray(data.L2_candidates)) {
+                        candidatesData = [...candidatesData, ...data.L2_candidates];
                     }
-                } else {
-                    console.error("No document found for the user.");
-                }
-        
+                });
+  
                 // Reverse the order so that the 0th index comes last
                 candidatesData.reverse();
-                setF2FCandidates(candidatesData);
+                setL2Candidates(candidatesData);
             } catch (error) {
-                console.error("Error fetching applicants: ", error);
+                console.error("Error fetching candidates: ", error);
             }
         };
-        
 
-        fetchF2FCandidates();
-    }, [user.uid]);
+        fetchL2Candidates();
+    }, []);
 
     // Fetch positions from Firestore
     const fetchPositions = async () => {
         try {
-            const positionsSnapshot = await db.collection('positionsrequired').get();
+            const positionsSnapshot = await db.collection('position').get();
             const fetchedPositions = positionsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+
             setPositions(fetchedPositions);
+            const uniquePositionFrom = [...new Set(fetchedPositions.map(pos => pos.positionFrom))];
+            setFilteredPositions(uniquePositionFrom);
         } catch (error) {
             console.error("Error fetching positions:", error);
         }
     };
 
     useEffect(() => {
-        fetchPositions(); // Fetch positions when the component mounts
+        fetchPositions();
     }, []);
 
+    const handlePositionFromChange = (event) => {
+        const selected = event.target.value;
+        setSelectedPositionFrom(selected);
+    };
 
-    
-    
+    const handleClearSelection = () => {
+        setSelectedPositionFrom('');
+        setSelectedPosition('');
+    };
+
+    const relevantPositions = positions.filter(position => position.positionFrom === selectedPositionFrom);
+
+    const filteredApplicants = l2Candidates.filter(candidate =>
+        (!selectedPositionFrom || candidate.company === selectedPositionFrom) && // Match company
+        (!selectedPosition || candidate.positionInterested === selectedPosition) // Match position title
+    );
+
+
+
 
     return (
-        <div className='e-F2FCandidates-container'>
-            <EmployeeDashboard onToggleSidebar={setCollapsed} />
-            <div className={`e-F2FCandidates-content ${collapsed ? 'collapsed' : ''}`}>
+        <div className='a-L2Candidates-container'>
+            <AdminDashboard onToggleSidebar={setCollapsed} />
+            <div className={`a-L2Candidates-content ${collapsed ? 'collapsed' : ''}`}>
                 
                 <div className="header-container">
-                    <h2>F2F Candidates</h2>
+                    <h2>L2 Candidates</h2>
                     <div className="header-actions">
+                        {/* Position Dropdown */}
+                        <select
+                            value={selectedPositionFrom}
+                            onChange={handlePositionFromChange}
+                            className="position-dropdown"
+                        >
+                            <option value="" disabled>Select Company</option>
+                            {filteredPositions.map((positionFrom, index) => (
+                                <option key={index} value={positionFrom}>
+                                    {positionFrom}
+                                </option>
+                            ))}
+                        </select>
+
                         {/* Position Dropdown */}
                         <select
                             value={selectedPosition}
                             onChange={(e) => setSelectedPosition(e.target.value)}
                             className="position-dropdown"
+                            disabled={!selectedPositionFrom} // Disable if no PositionFrom is selected
                         >
-                            <option value="">Select Position</option>
-                            {positions.map(position => (
-                                <option key={position.id} value={position.positionName}>
-                                    {position.positionName}
+                            <option value="" disabled>Select Position</option>
+                            {relevantPositions.map(position => (
+                                <option key={position.id} value={position.positionTitle}>
+                                    {position.positionTitle}
                                 </option>
                             ))}
                         </select>
+
+                        {selectedPositionFrom && (
+                            <button
+                                className="clear-selection-icon"
+                                onClick={handleClearSelection}
+                                style={{ cursor: 'pointer', color: 'red' }}
+                            >
+                                Clear Selection
+                            </button>
+                        )}
                     </div>
                 </div>
                 
                 <div className='table-responsive'>
-                    <table className="table table-striped table-bordered custom-table">
+                    <table className="styled-table">
                         <thead>
                             <tr>
-                            <th>S No</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
-                                {/* <th>DOB</th> */}
                                 <th>Gender</th>
                                 <th>Educational Qualification</th>
                                 <th>Year of Passing</th>
                                 <th>Years of Experience</th>
-                                {/* <th>Address</th>
-                                <th>City</th> */}
                                 <th>Current/Last Company</th>
                                 <th>Position Interested</th>
                                 <th>Company</th>
                                 <th>Designation</th>
-                                {/* <th>Preferred Area</th> */}
                                 <th>Skills</th>
-                                {/* <th>Source</th> */}
                                 <th>Resume</th>
-                                {/* <th>Status</th> */}
-                                <th>F2FStatus</th>
-                                {/* <th>Action</th>  */}
+                                <th>L2Status</th>
+                              
                             </tr>
                         </thead>
                         <tbody>
-                            {f2FCandidates.map((candidate, index) => (
+                            {filteredApplicants.map(candidate => (
                                 <tr key={candidate.id}>
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>
                                     <td>{candidate.mobile}</td>
-                                    {/* <td className="one-line">{candidate.dateOfBirth}</td> */}
                                     <td>{candidate.gender}</td>
                                     <td>{candidate.educationalQualification}</td>
                                     <td>{candidate.yearOfPassing}</td>
                                     <td>{candidate.yearsOfExperience}</td>
-                                    {/* <td>{candidate.address}</td>
-                                    <td>{candidate.city}</td> */}
                                     <td>{candidate.currentCompany}</td>
                                     <td>{candidate.positionInterested}</td>
                                     <td>{candidate.company}</td>
                                     <td>{candidate.designation}</td>
-                                    {/* <td>{candidate.preferredArea}</td>   */}
                                     <td>{candidate.skills}</td>
-                                    {/* <td>{candidate.source}</td>                               */}
-                                    <td> 
+                                    <td>
                                         <a 
                                             href={candidate.resume} 
                                             target="_blank" 
@@ -145,17 +175,17 @@ const OpenPositions = () => {
                                             View
                                         </a>
                                     </td>
-                                    {/* <td>{candidate.status}</td> */}
-                                    <td>{candidate.F2FStatus}</td>
-                                    
+                                    <td>{candidate.L2Status}</td>
+                                   
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+             
             </div>
         </div>
     );
-}
+};
 
 export default OpenPositions;

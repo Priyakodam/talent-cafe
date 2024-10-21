@@ -6,6 +6,7 @@ import {
   FaChalkboardTeacher,
   FaUserTie,
   FaUserPlus, 
+  FaAddressBook,
 } from "react-icons/fa"; 
 import { IoHomeOutline } from "react-icons/io5";
 import "./Dashboard.css";
@@ -102,6 +103,24 @@ const AdminDashboard = ({ onToggleSidebar }) => {
               </Link>
             </li>
 
+            <li className={`nav-item ${location.pathname === '/a-L1candidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/a-L1candidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">L1 Candidates</span>}
+              </Link>
+            </li>
+            <li className={`nav-item ${location.pathname === '/a-L2candidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/a-L2candidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">L2 Candidates</span>}
+              </Link>
+            </li>
+            <li className={`nav-item ${location.pathname === '/a-F2Fcandidates' ? 'active' : ''}`}>
+              <Link className="nav-link" to="/a-F2Fcandidates" onClick={handleNavItemClick}>
+                <FaAddressBook className="nav-icon" />
+                {!collapsed && <span className="link_text">F2F Candidates</span>}
+              </Link>
+            </li>
             <li className={`nav-item ${location.pathname === '/productivity-all-tracker'? 'active' : ''}`}>
               <Link className="nav-link" to="/productivity-all-tracker" onClick={handleNavItemClick}>
                 <FaUserPlus    className="nav-icon" />

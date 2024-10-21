@@ -263,9 +263,10 @@ const OpenPositions = () => {
                 </div>
                 
                 <div className='table-responsive'>
-                    <table className="styled-table">
+                    <table className="table table-striped table-bordered custom-table">
                         <thead>
                             <tr>
+                            <th>S No</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Mobile</th>
@@ -290,7 +291,7 @@ const OpenPositions = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredApplicants.map(candidate => (
+                        {filteredApplicants.map((candidate, index) => (
                                 <tr key={candidate.id}>
                                     <td>{candidate.name}</td>
                                     <td>{candidate.email}</td>

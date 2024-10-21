@@ -26,6 +26,9 @@ import EditProductivityTracker from "./Components/Employee/ProductivityTracker/E
 import ProductivityTracker from "./Components/ProductivityTracker/ProductivityTracker";
 import EmpF2FCandidates from './Components/Employee/Screening/EmpF2FCandidates';
 import EmpDailyReport from "./Components/EmpDailyReport/EmpDailyReport";
+import AdminL1Candidatwes from './Components/Screening/EmpL1Candidates';
+import AdminL2Candidates from './Components/Screening/EmpL2Candidates';
+import AdminF2FCandidates from './Components/Screening/EmpF2FCandidates'
 
 const queryClient = new QueryClient();
 
@@ -57,6 +60,9 @@ function App() {
             <Route path="/edit-productivity-tracker" element={<EditProductivityTracker />} /> 
             <Route path="/productivity-all-tracker" element={<ProductivityTracker />} />
             <Route path="/emp-daily-report" element={<EmpDailyReport />} />
+            <Route path="/a-L1candidates" element={<AdminL1Candidatwes />} />
+            <Route path="/a-L2candidates" element={<AdminL2Candidates />} />
+            <Route path="/a-F2Fcandidates" element={<AdminF2FCandidates />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
