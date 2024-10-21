@@ -3,9 +3,11 @@ import * as XLSX from 'xlsx';
 import { db } from '../../Firebase/FirebaseConfig';
 import { arrayUnion } from 'firebase/firestore';
 import { Button } from 'react-bootstrap';
+// import { useAuth } from "../../Context/AuthContext";
 
 const BulkUploadComponent = ({ user, onUploadComplete }) => {
     const [file, setFile] = useState(null);
+    // const { user } = useAuth();
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -43,7 +45,9 @@ const BulkUploadComponent = ({ user, onUploadComplete }) => {
                             designation: applicant['Designation'],
                             skills: applicant['Skills'],
                             resume: applicant['Resume Link'],
-                            status: 'New'
+                            status: 'New',
+                            userName: user.name,
+                            userId: user.uid,
                         })
                     });
                 } catch (error) {

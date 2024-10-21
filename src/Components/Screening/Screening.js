@@ -147,6 +147,7 @@ const Screening = () => {
                                 <th>Company</th>
                                 <th>Designation</th>
                                 <th>Skills</th>
+                                <th>Recruiter Name</th>
                                 <th>Resume</th>
                                 <th>Status</th>
                             </tr>
@@ -167,6 +168,7 @@ const Screening = () => {
                                     <td>{applicant.company}</td>
                                     <td>{applicant.designation}</td>
                                     <td>{applicant.skills}</td>
+                                    <td>{applicant.userName}</td>
                                     <td>
                                         <a
                                             href={applicant.resume}
