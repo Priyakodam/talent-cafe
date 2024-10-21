@@ -2,8 +2,9 @@ import React from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 import { PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Legend, LabelList } from 'recharts';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './Dashboard.css';
+import { Link } from 'react-router-dom';
 
-// Mock Data
 const totalPositions = 100;  // Example total number of open positions (internal + client)
 
 const pieData = [
@@ -27,7 +28,6 @@ const lineData = [
   { name: 'Friday', scheduled: 5 },
 ];
 
-// Fulfillment data for open vs closed positions per client
 const fulfillmentData = [
   { name: 'Client A', open: 10, closed: 30 },
   { name: 'Client B', open: 15, closed: 25 },
@@ -40,13 +40,47 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 const Dashboard = () => {
   return (
     <Container fluid className="p-4">
+      {/* Cards Section */}
       <Row className="mb-4">
-        <Col>
-          <h2 className="text-center">Recruitment Dashboard</h2>
-        </Col>
-      </Row>
+    <Col md={3}>
+      <Card className="text-white bg-warning" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">Clients</h5>
+          <h3>5</h3>
+          <Link to="/clients" className="text-white">View Details &rarr;</Link>
+        </Card.Body>
+      </Card>
+    </Col>
+    <Col md={3}>
+      <Card className="text-white bg-success" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">Open Positions</h5>
+          <h3>6</h3>
+          <a href="/openpositions" className="text-white">View Details &rarr;</a>
+        </Card.Body>
+      </Card>
+    </Col>
+    <Col md={3}>
+      <Card className="text-white bg-danger" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">Blogs</h5>
+          <h3>2</h3>
+          <a href="#" className="text-white">View Details &rarr;</a>
+        </Card.Body>
+      </Card>
+    </Col>
+    <Col md={3}>
+      <Card className="text-white bg-primary" style={{ width: '250px', height: '150px' }}>
+        <Card.Body>
+          <h5 className="card-title">FAQs</h5>
+          <h3>17</h3>
+          <a href="#" className="text-white">View Details &rarr;</a>
+        </Card.Body>
+      </Card>
+    </Col>
+  </Row>
 
-      {/* Total Open Positions */}
+      {/* Existing Charts */}
       <Row className="mb-4">
         <Col>
           <Card>
@@ -73,7 +107,6 @@ const Dashboard = () => {
                   outerRadius={120}
                   fill="#8884d8"
                   dataKey="value"
-                   
                 >
                   {pieData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
